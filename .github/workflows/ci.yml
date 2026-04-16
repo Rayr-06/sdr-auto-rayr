@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  DATABASE_URL: file:./db/sdr.db
+  ADMIN_SECRET: ci-test-secret
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,27 +17,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Create db directory
+        run: mkdir -p db
+
       - name: Generate Prisma client
         run: npx prisma generate
-        env:
-          DATABASE_URL: file:./db/sdr.db
-
-      - name: Type check
-        run: npx tsc --noEmit
-        continue-on-error: true
 
       - name: Lint
         run: npm run lint
         continue-on-error: true
 
-      - name: Check build
-        run: echo "Build check passed - app structure verified"
+      - name: Type check
+        run: npx tsc --noEmit
+        continue-on-error: true
+
+      - name: Verify structure
+        run: |
+          echo "✅ src/app/page.tsx exists"     && test -f src/app/page.tsx
+          echo "✅ src/lib/llm.ts exists"       && test -f src/lib/llm.ts
+          echo "✅ prisma/schema.prisma exists" && test -f prisma/schema.prisma
+          echo "✅ All critical files present"

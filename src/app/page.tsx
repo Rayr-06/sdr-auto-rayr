@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import {
   Search, Users, Activity, Mail, Send, BarChart3, Rocket, ChevronRight,
   Check, SkipForward, Edit3, RefreshCw, Trash2, Zap, Target, Eye,
@@ -55,8 +55,8 @@ const PROVIDER = {
 
 const CHART_COLORS = ['#7c3aed','#f59e0b','#0ea5e9','#10b981','#f43f5e','#8b5cf6'];
 
-const fadeUp = { hidden:{ opacity:0, y:12 }, show:{ opacity:1, y:0, transition:{ duration:0.25, ease:'easeOut' } } };
-const stagger = { show:{ transition:{ staggerChildren:0.06 } } };
+const fadeUp: Variants = { hidden:{ opacity:0, y:12 }, show:{ opacity:1, y:0, transition:{ duration:0.25, ease:'easeOut' } } };
+const stagger: Variants = { show:{ transition:{ staggerChildren:0.06 } } };
 
 // ── Reusable components ────────────────────────────────────────
 function ProviderPill({ config }: { config: LLMConfig | null }) {
@@ -447,7 +447,7 @@ function Stage1Tab({ icps, onRefresh }: { icps:ICP[]; onRefresh:()=>void }) {
                             const meta = { painPoints:['Pain Points','bg-rose-50 text-rose-700'], buyingSignals:['Buying Signals','bg-blue-50 text-blue-700'], competitors:['Competitors','bg-orange-50 text-orange-700'] }[key];
                             return (
                               <div key={key}>
-                                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{meta[0]}</p>
+                                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{String(meta[0])}</p>
                                 <div className="flex flex-wrap gap-1">
                                   {(items as string[]).map((item,i) => <Badge key={i} variant="secondary" className={`text-xs ${meta[1]}`}>{String(item)}</Badge>)}
                                 </div>
