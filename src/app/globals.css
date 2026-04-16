@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 224 71% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 71% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 71% 4%;
+  --primary: 262 83% 58%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 224 71% 4%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 262 83% 96%;
+  --accent-foreground: 262 83% 38%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 262 83% 58%;
+  --radius: 0.75rem;
+  --chart-1: 262 83% 58%;
+  --chart-2: 142 70% 45%;
+  --chart-3: 32 95% 44%;
+  --chart-4: 199 89% 48%;
+  --chart-5: 346 77% 50%;
+}
+
+@layer base {
+  * {
+    border-color: hsl(220 13% 91%);
+    box-sizing: border-box;
+  }
+  body {
+    background-color: hsl(0 0% 98%);
+    color: hsl(224 71% 4%);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  code, kbd, pre {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(220 13% 83%); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(220 9% 65%); }
+
+/* Mesh gradient background */
+.mesh-bg {
+  background-color: hsl(0 0% 98%);
+  background-image:
+    radial-gradient(at 15% 5%,  hsla(262, 83%, 95%, 0.55) 0px, transparent 50%),
+    radial-gradient(at 85% 0%,  hsla(240, 80%, 95%, 0.35) 0px, transparent 50%),
+    radial-gradient(at 0%  90%, hsla(142, 70%, 95%, 0.25) 0px, transparent 50%);
+}
+
+/* Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.3s ease-out forwards; }
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.count-up { animation: count-up 0.4s ease-out both; }
+
+@keyframes flow {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+.flow-pulse { animation: flow 2.2s ease-in-out infinite; }
+
+/* Shadow utilities */
+.shadow-soft { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04); }
+.shadow-card { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.04); }
+.shadow-lift { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.05); }
