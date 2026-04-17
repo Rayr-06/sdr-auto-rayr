@@ -1,22 +1,9 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaNeon } from '@prisma/adapter-neon'
-import { neonConfig, Pool } from '@neondatabase/serverless'
 
 function createPrismaClient() {
-  // On Cloudflare Workers, use the Neon serverless adapter
   if (process.env.DATABASE_URL?.startsWith('postgresql')) {
-    try {
-      // In edge/workers environment, use WebSocket-based connection
-      const connectionString = process.env.DATABASE_URL!
-      const pool = new Pool({ connectionString })
-      const adapter = new PrismaNeon(pool)
-      return new PrismaClient({ adapter } as any)
-    } catch {
-      // Fallback to standard client
-      return new PrismaClient()
-    }
+    return new PrismaClient()
   }
-  // Local SQLite
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error'] : [],
   })
