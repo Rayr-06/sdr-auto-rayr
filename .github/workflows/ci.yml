@@ -8,7 +8,8 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  DATABASE_URL: file:./db/sdr.db
+  DATABASE_URL: postgresql://user:pass@localhost/db
+  DIRECT_URL: postgresql://user:pass@localhost/db
   ADMIN_SECRET: ci-secret
   GROQ_API_KEY: demo
   NEXT_TELEMETRY_DISABLED: 1
@@ -18,19 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Create db directory
-        run: mkdir -p db
-
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Type check
-        run: npx tsc --noEmit
+      - run: npm install --legacy-peer-deps
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
