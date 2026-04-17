@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SDR Autopilot — AI Sales Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070f;--s1:#0f0f1a;--s2:#161625;--s3:#1d1d2e;
+  --b1:#ffffff08;--b2:#ffffff12;--b3:#ffffff1e;
+  --t1:#eeeef8;--t2:#9090b0;--t3:#606080;
+  --v:#7c5cfc;--v2:#a78bfa;--v3:#c4b5fd;
+  --g:#34d399;--a:#fbbf24;--r:#f87171;--b:#60a5fa;
+  --rad:10px;--rad2:14px;--rad3:20px;
+}
+html{font-size:14px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 40% at 15% 0%,#7c5cfc18 0%,transparent 60%),
+             radial-gradient(ellipse 50% 50% at 85% 100%,#34d39910 0%,transparent 60%)}
+
+/* ─ Layout ─────────────────────────────── */
+#app{min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
+.hd{height:58px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;border-bottom:1px solid var(--b1);
+  background:rgba(7,7,15,.85);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--v),var(--v2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:#fff}
+.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--t1)}
+.ls{font-size:11px;color:var(--t3);display:block;margin-top:1px}
+.hd-r{display:flex;align-items:center;gap:8px}
+
+/* ─ Nav ─────────────────────────────────── */
+.nav{display:flex;overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid var(--b1);background:rgba(15,15,26,.6);padding:0 20px}
+.nav::-webkit-scrollbar{display:none}
+.nb{display:flex;align-items:center;gap:6px;padding:11px 14px;font-size:13px;
+  font-weight:500;color:var(--t3);border:none;background:none;cursor:pointer;
+  white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;
+  font-family:'DM Sans',sans-serif}
+.nb:hover{color:var(--t1)}
+.nb.on{color:var(--v3);border-bottom-color:var(--v)}
+.nb svg{width:14px;height:14px;flex-shrink:0}
+
+/* ─ Main ────────────────────────────────── */
+.main{flex:1;max-width:1140px;width:100%;margin:0 auto;padding:28px 20px}
+.tab{display:none}.tab.on{display:block;animation:fu .25s ease-out}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─ Cards ───────────────────────────────── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:22px}
+.card:hover{border-color:var(--b2)}
+.card-sm{padding:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:560px){.g6{grid-template-columns:repeat(2,1fr)}}
+
+/* ─ KPI cards ───────────────────────────── */
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);
+  padding:16px;transition:.2s;animation:fu .4s both}
+.kpi:hover{border-color:var(--b2);transform:translateY(-1px)}
+.kl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px}
+.kv{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;line-height:1}
+.ks{font-size:11px;color:var(--t3);margin-top:5px}
+
+/* ─ Hero ─────────────────────────────────── */
+.hero{background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(167,139,250,.05));
+  border:1px solid rgba(124,92,252,.18);border-radius:var(--rad3);padding:44px 36px;
+  position:relative;overflow:hidden;margin-bottom:24px}
+.hero::after{content:'';position:absolute;top:-80px;right:-80px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,92,252,.12),transparent 70%)}
+.htag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
+  background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.22);
+  border-radius:99px;font-size:11px;font-weight:600;color:var(--v3);margin-bottom:18px}
+.hero h2{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;
+  letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
+.hero h2 em{font-style:normal;background:linear-gradient(90deg,var(--v3),var(--g));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:14px;color:var(--t2);max-width:460px;line-height:1.6;margin-bottom:24px}
+.hstats{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:24px}
+.hs{font-size:12px;color:var(--t2)}.hs b{color:var(--t1);font-weight:600}
+
+/* ─ Pipeline flow ───────────────────────── */
+.pflow{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.pflow::-webkit-scrollbar{display:none}
+.psb{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:72px;
+  background:none;border:none;cursor:pointer;padding:10px 6px;border-radius:var(--rad);
+  transition:.15s;color:var(--t1)}
+.psb:hover{background:var(--s2)}
+.psi{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;border:1px solid var(--b1);transition:.15s}
+.psb:hover .psi{border-color:var(--b2);transform:scale(1.06)}
+.psc{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.psl{font-size:10px;font-weight:500;color:var(--t3)}
+.arr{color:var(--b2);flex-shrink:0;font-size:14px;margin-top:-14px}
+
+/* ─ Buttons ─────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rad);
+  font-weight:600;font-size:13px;border:none;cursor:pointer;transition:.15s;
+  font-family:'DM Sans',sans-serif;text-decoration:none}
+.btn-p{background:var(--v);color:#fff}.btn-p:hover{background:#6d4ef0;transform:translateY(-1px)}
+.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-s{background:var(--s2);color:var(--t1);border:1px solid var(--b2)}
+.btn-s:hover{border-color:var(--b3);background:var(--s3)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-ic{width:32px;height:32px;padding:0;justify-content:center;border-radius:8px}
+.btn-d{background:rgba(248,113,113,.1);color:var(--r);border:1px solid rgba(248,113,113,.2)}
+.btn-d:hover{background:rgba(248,113,113,.18)}
+
+/* ─ Forms ───────────────────────────────── */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
+.fld input,.fld textarea,.fld select{width:100%;background:var(--s2);border:1px solid var(--b2);
+  border-radius:8px;padding:9px 11px;color:var(--t1);font-size:13px;
+  font-family:'DM Sans',sans-serif;transition:.15s;outline:none}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 2px rgba(124,92,252,.12)}
+.fld input::placeholder{color:var(--t3)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.r2{grid-template-columns:1fr}}
+
+/* ─ Table ───────────────────────────────── */
+.tw{overflow-x:auto;border-radius:var(--rad);border:1px solid var(--b1)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--s2)}
+th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid var(--b1);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.015)}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--v),var(--v2));
+  display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* ─ Badges ──────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;
+  font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap}
+.bh{background:rgba(248,113,113,.1);color:var(--r);border-color:rgba(248,113,113,.2)}
+.bw{background:rgba(251,191,36,.1);color:var(--a);border-color:rgba(251,191,36,.2)}
+.bc{background:rgba(107,107,138,.15);color:var(--t3);border-color:rgba(107,107,138,.2)}
+.bp{background:rgba(251,191,36,.1);color:var(--a);border-color:rgba(251,191,36,.2)}
+.ba{background:rgba(52,211,153,.1);color:var(--g);border-color:rgba(52,211,153,.2)}
+.bs{background:rgba(96,165,250,.1);color:var(--b);border-color:rgba(96,165,250,.2)}
+.bsig{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.sf{background:rgba(52,211,153,.1);color:var(--g)}.sh{background:rgba(251,191,36,.1);color:var(--a)}
+.sn{background:rgba(96,165,250,.1);color:var(--b)}.st{background:rgba(167,139,250,.1);color:var(--v2)}
+.se{background:rgba(52,211,153,.1);color:var(--g)}.sl{background:rgba(248,113,113,.1);color:var(--r)}
+.sp{background:rgba(129,140,248,.1);color:#818cf8}
+
+/* ─ Score bar ───────────────────────────── */
+.sb{display:flex;align-items:center;gap:7px;min-width:76px}
+.st2{flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.sf2{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--v),var(--v2))}
+.sn2{font-size:11px;font-weight:700;width:22px;text-align:right;color:var(--t3)}
+
+/* ─ Modal ───────────────────────────────── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
+  z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;
+  opacity:0;pointer-events:none;transition:.2s}
+.mo.on{opacity:1;pointer-events:all}
+.md{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rad3);
+  padding:26px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;
+  transform:scale(.96);transition:.2s}
+.mo.on .md{transform:scale(1)}
+.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.mt{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.mc{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;
+  padding:3px 6px;border-radius:6px;transition:.15s}
+.mc:hover{color:var(--t1)}
+.eb{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rad);
+  padding:14px;font-size:12px;white-space:pre-wrap;line-height:1.7;
+  font-family:'JetBrains Mono',monospace;color:var(--t1)}
+
+/* ─ Toast ───────────────────────────────── */
+.tc{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:7px}
+.tos{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rad);
+  padding:11px 15px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;
+  animation:fu .3s ease-out;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.tok{border-color:rgba(52,211,153,.25)}.ter{border-color:rgba(248,113,113,.25)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.15);
+  border-top-color:currentColor;border-radius:50%;animation:rot .7s linear infinite;flex-shrink:0}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ─ Provider pill ───────────────────────── */
+.pp{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;
+  border:1px solid var(--b2);font-size:11px;font-weight:600;cursor:default}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ─ Empty ───────────────────────────────── */
+.emp{text-align:center;padding:52px 16px;color:var(--t3)}
+.ei{font-size:36px;margin-bottom:10px;opacity:.25}
+.emp h3{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:5px}
+.emp p{font-size:12px;line-height:1.5}
+
+/* ─ Section header ──────────────────────── */
+.sh3{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.st3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.ss{font-size:13px;color:var(--t2);margin-top:2px}
+
+/* ─ Draft item ──────────────────────────── */
+.di{display:flex;align-items:flex-start;gap:10px;padding:14px;border-radius:var(--rad);
+  border:1px solid var(--b1);margin-bottom:8px;cursor:pointer;transition:.15s}
+.di:hover{border-color:var(--b2);background:rgba(124,92,252,.03)}
+.dm{display:flex;gap:10px;font-size:11px;color:var(--t3);margin-top:4px}
+
+/* ─ Action buttons ──────────────────────── */
+.abs{display:flex;gap:5px;flex-shrink:0}
+.ab{width:30px;height:30px;border-radius:7px;border:1px solid var(--b1);background:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;
+  transition:.15s;color:var(--t3)}
+.ab:hover{border-color:var(--b2);color:var(--t1)}
+.ab.ap:hover{border-color:rgba(52,211,153,.3);color:var(--g);background:rgba(52,211,153,.07)}
+.ab.ed:hover{border-color:rgba(96,165,250,.3);color:var(--b);background:rgba(96,165,250,.07)}
+.ab.sk:hover{border-color:var(--b2);color:var(--t3)}
+
+/* ─ Signal item ─────────────────────────── */
+.sgi{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--b1)}
+.sgi:last-child{border-bottom:none}
+.sgic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;font-size:15px}
+
+/* ─ Footer ──────────────────────────────── */
+.ft{border-top:1px solid var(--b1);padding:14px 20px;display:flex;align-items:center;
+  justify-content:space-between;font-size:11px;color:var(--t3)}
+.ft a{color:var(--t3);text-decoration:none;transition:.15s}.ft a:hover{color:var(--t1)}
+
+/* ─ Utils ───────────────────────────────── */
+.flex{display:flex}.aic{align-items:center}.jb{justify-content:space-between}
+.fw{flex-wrap:wrap}.f1{flex:1}.mn0{min-width:0}.gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}
+.mb6{margin-bottom:6px}.mb10{margin-bottom:10px}.mb14{margin-bottom:14px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm{color:var(--t2)}.tx{color:var(--t3)}.ts{font-size:12px}.tss{font-size:11px}
+.fw6{font-weight:600}.fw7{font-weight:700}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.w100{width:100%}
+.sep{height:1px;background:var(--b1);margin:14px 0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header class="hd">
+  <a class="logo" href="#">
+    <div class="lm">SR</div>
+    <div><div class="lt">SDR Autopilot</div><span class="ls">AI Sales Pipeline · RAYR</span></div>
+  </a>
+  <div class="hd-r">
+    <div class="pp" id="ppill"><span class="pd"></span><span id="plabel">Demo</span></div>
+    <button class="btn btn-s btn-sm btn-ic" onclick="refreshAll()" title="Refresh">↻</button>
+    <button class="btn btn-s btn-sm btn-ic" onclick="doReset()" title="Reset" style="color:var(--r)">⊗</button>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="nb on" onclick="go('ov',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview
+  </button>
+  <button class="nb" onclick="go('s1',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research
+  </button>
+  <button class="nb" onclick="go('s2',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Prospects
+  </button>
+  <button class="nb" onclick="go('s3',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Signals
+  </button>
+  <button class="nb" onclick="go('s4',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Generate
+  </button>
+  <button class="nb" onclick="go('s5',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send
+  </button>
+</nav>
+
+<main class="main">
+
+<!-- OVERVIEW -->
+<div id="ov" class="tab on">
+  <div id="heroBox" class="hero mb24">
+    <div class="htag">⚡ AI-Powered · Human-Approved</div>
+    <h2>Your AI sales pipeline.<br><em>Research to reply in 30 min.</em></h2>
+    <p>5-stage automation from ICP definition to personalised email delivery. AI does the work, you approve.</p>
+    <div class="hstats">
+      <div class="hs"><b>&lt; 3 min</b> / prospect</div>
+      <div class="hs"><b>100–200</b> prospects/day</div>
+      <div class="hs"><b>+60%</b> reply rate</div>
+    </div>
+    <div class="flex gap10 fw">
+      <button class="btn btn-p" id="heroBtn" onclick="runPipeline()">▶ Run Full Pipeline</button>
+    </div>
+  </div>
+
+  <div class="card mb14">
+    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Pipeline · click to navigate</div>
+    <div class="pflow">
+      <button class="psb" onclick="go('s1')"><div class="psc" id="pf0">0</div><div class="psi" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.15)">🔍</div><div class="psl">Research</div></button>
+      <div class="arr">→</div>
+      <button class="psb" onclick="go('s2')"><div class="psc" id="pf1">0</div><div class="psi" style="background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.15)">👥</div><div class="psl">Prospects</div></button>
+      <div class="arr">→</div>
+      <button class="psb" onclick="go('s3')"><div class="psc" id="pf2">0</div><div class="psi" style="background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.15)">⚡</div><div class="psl">Signals</div></button>
+      <div class="arr">→</div>
+      <button class="psb" onclick="go('s4')"><div class="psc" id="pf3">0</div><div class="psi" style="background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.15)">✨</div><div class="psl">Drafts</div></button>
+      <div class="arr">→</div>
+      <button class="psb" onclick="go('s5')"><div class="psc" id="pf4">0</div><div class="psi" style="background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.15)">📤</div><div class="psl">Sent</div></button>
+    </div>
+  </div>
+
+  <div class="g6 mb24">
+    <div class="kpi"><div class="kl">ICPs</div><div class="kv" id="k0">0</div></div>
+    <div class="kpi"><div class="kl">Prospects</div><div class="kv" id="k1">0</div><div class="ks" id="k1s">—</div></div>
+    <div class="kpi"><div class="kl">Signals</div><div class="kv" id="k2">0</div></div>
+    <div class="kpi"><div class="kl">Drafts</div><div class="kv" id="k3">0</div></div>
+    <div class="kpi"><div class="kl">Sent</div><div class="kv" id="k4">0</div></div>
+    <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="k5">0%</div><div class="ks" id="k5s">0% reply</div></div>
+  </div>
+
+  <div id="quickBox">
+    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Start a stage</div>
+    <div class="g3">
+      <div class="card card-sm" style="cursor:pointer" onclick="go('s1')"><div style="font-size:22px;margin-bottom:7px">🎯</div><div class="fw6 mb6">Define ICP</div><div class="ts tx">Set target market criteria</div></div>
+      <div class="card card-sm" style="cursor:pointer" onclick="go('s3')"><div style="font-size:22px;margin-bottom:7px">📡</div><div class="fw6 mb6">Collect Signals</div><div class="ts tx">Detect buying intent</div></div>
+      <div class="card card-sm" style="cursor:pointer" onclick="go('s4')"><div style="font-size:22px;margin-bottom:7px">✍️</div><div class="fw6 mb6">Generate Emails</div><div class="ts tx">AI-crafted outreach</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STAGE 1 -->
+<div id="s1" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Market Research</div><div class="ss">Define ICP → AI generates prospects + analysis</div></div>
+    <button class="btn btn-p btn-sm" id="resBtn" onclick="runResearch()">🔍 Run Research</button>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="fw7 mb14" style="font-family:'Syne',sans-serif">ICP Configuration</div>
+      <div class="fld"><label>Industries</label><input id="fi" value="SaaS, FinTech, B2B SaaS"/></div>
+      <div class="fld"><label>Target Titles</label><input id="ft" value="VP Sales, CRO, Head of Growth"/></div>
+      <div class="r2">
+        <div class="fld"><label>Min Employees</label><input id="fmin" type="number" value="50"/></div>
+        <div class="fld"><label>Max Employees</label><input id="fmax" type="number" value="2000"/></div>
+      </div>
+      <div class="fld"><label>Geographies</label><input id="fg" value="US, UK, IN"/></div>
+      <div class="fld"><label>Tech Signals</label><input id="ftech" value="Salesforce, HubSpot"/></div>
+      <div class="fld"><label>Pain Keywords</label><input id="fp" value="outbound, pipeline, conversion"/></div>
+    </div>
+    <div class="card" id="icpBox">
+      <div class="fw7 mb14" style="font-family:'Syne',sans-serif">Created ICPs</div>
+      <div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Run research to create your first ICP</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- STAGE 2 -->
+<div id="s2" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Prospect Profiling</div><div class="ss" id="p2sub">0 prospects</div></div>
+    <div class="flex gap8 aic fw">
+      <select id="pfilter" onchange="renderProspects()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif">
+        <option value="all">All Status</option><option value="hot">🔴 Hot</option>
+        <option value="warm">🟡 Warm</option><option value="cold">⚪ Cold</option>
+      </select>
+      <button class="btn btn-p btn-sm" id="enrBtn" onclick="enrichProspects()">👥 Enrich</button>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Contact</th><th>Company</th><th>ICP Score</th><th>Intent</th><th>Status</th></tr></thead>
+    <tbody id="ptbl"><tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>No prospects yet</h3><p>Run Research first</p></div></td></tr></tbody>
+  </table></div>
+</div>
+
+<!-- STAGE 3 -->
+<div id="s3" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Intent Signals</div><div class="ss" id="s3sub">0 signals</div></div>
+    <button class="btn btn-p btn-sm" id="sigBtn" onclick="collectSignals()">⚡ Collect Signals</button>
+  </div>
+  <div class="card" id="sigBox">
+    <div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Collect signals to detect buying intent</p></div>
+  </div>
+</div>
+
+<!-- STAGE 4 -->
+<div id="s4" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Content Generation</div><div class="ss" id="s4sub">0 drafts</div></div>
+    <button class="btn btn-p btn-sm" id="genBtn" onclick="generateEmails()">✨ Generate All</button>
+  </div>
+  <div id="draftBox"><div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Generate emails for hot & warm prospects</p></div></div>
+</div>
+
+<!-- STAGE 5 -->
+<div id="s5" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Approval & Send</div><div class="ss" id="s5sub">Review and approve before sending</div></div>
+    <button class="btn btn-p btn-sm" id="sndBtn" onclick="sendAll()">📤 Send All Approved</button>
+  </div>
+  <div class="g3 mb20" id="emailStatBox" style="display:none">
+    <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="es0">0%</div></div>
+    <div class="kpi"><div class="kl">Reply Rate</div><div class="kv" id="es1">0%</div></div>
+    <div class="kpi"><div class="kl">Bounce Rate</div><div class="kv" id="es2">0%</div></div>
+  </div>
+  <div id="queueBox" class="mb20"></div>
+  <div id="sentBox" style="display:none">
+    <div class="fw7 mb10" style="font-family:'Syne',sans-serif">Sent Emails</div>
+    <div class="tw"><table>
+      <thead><tr><th>Recipient</th><th>Subject</th><th>Provider</th><th>Opened</th><th>Replied</th><th>Bounced</th></tr></thead>
+      <tbody id="sentTbl"></tbody>
+    </table></div>
+  </div>
+</div>
+
+</main>
+
+<footer class="ft">
+  <span>SDR Autopilot · <b style="color:var(--t1)">Adithya Sharma</b> · RAYR</span>
+  <a href="https://github.com/Rayr-06/sdr-auto-rayr" target="_blank">GitHub ↗</a>
+</footer>
+</div>
+
+<!-- Modal -->
+<div class="mo" id="modal" onclick="outsideClose(event)">
+  <div class="md">
+    <div class="mh">
+      <div><div class="mt" id="mTitle">Email</div><div class="ts tm mt-1" id="mSub"></div></div>
+      <button class="mc" onclick="closeModal()">✕</button>
+    </div>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<div class="tc" id="toasts"></div>
+
+<script>
+// ── Config ─────────────────────────────────────────────────
+const BASE = '/api';
+let S = { stats:{icps:0,prospects:0,signals:0,drafts:0,sentEmails:0},
+  ps:{total:0,hot:0,warm:0,cold:0}, es:{sent:0,opened:0,replied:0,bounced:0,openRate:0,replyRate:0,bounceRate:0},
+  icps:[], prospects:[], signals:[], drafts:[], queue:[], sent:[], llm:null, cur:null };
+
+// ── Helpers ────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const h=s=>s?.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function toast(msg, type='ok'){
+  const el=document.createElement('div');
+  el.className=`tos ${type==='ok'?'tok':'ter'}`;
+  el.innerHTML=`<span>${type==='ok'?'✓':'✗'}</span><span>${msg}</span>`;
+  $('toasts').appendChild(el);
+  setTimeout(()=>el.remove(),4000);
+}
+
+function setBtn(id,loading,label){
+  const b=$(id);if(!b)return;
+  b.disabled=loading;
+  if(loading){b._t=b.innerHTML;b.innerHTML=`<span class="spin"></span> ${label}…`}
+  else{b.innerHTML=b._t||b.innerHTML}
+}
+
+function scoreBar(v){const p=Math.round(v);return`<div class="sb"><div class="st2"><div class="sf2" style="width:${p}%"></div></div><span class="sn2">${p}</span></div>`}
+function ini(n){return(n||'?').split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}
+function sbadge(s){const m={hot:'bh',warm:'bw',cold:'bc',pending:'bp',approved:'ba',sent:'bs',contacted:'bs'};return`<span class="badge ${m[s]||'bc'}">${s[0].toUpperCase()+s.slice(1)}</span>`}
+function sigbadge(t){const m={funding:'sf',hiring:'sh',news:'sn',tech_change:'st',expansion:'se',leadership:'sl',partnership:'sp'};return`<span class="bsig ${m[t]||'sn'}">${t.replace('_',' ')}</span>`}
+function sigicon(t){const m={funding:'💰',hiring:'📋',news:'📰',tech_change:'🔧',expansion:'🌍',leadership:'👔',partnership:'🤝'};return m[t]||'📡'}
+
+async function req(url,opts={}){
+  const r=await fetch(BASE+url,{headers:{'Content-Type':'application/json'},...opts});
+  if(!r.ok){const e=await r.json().catch(()=>({error:'Request failed'}));throw new Error(e.error||`HTTP ${r.status}`)}
+  return r.json();
+}
+
+// ── Navigation ─────────────────────────────────────────────
+function go(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  $(id)?.classList.add('on');
+  if(btn) btn.classList.add('on');
+  else{const b=[...document.querySelectorAll('.nb')].find(x=>x.getAttribute('onclick')?.includes(`'${id}'`));if(b)b.classList.add('on')}
+}
+
+// ── Refresh ────────────────────────────────────────────────
+async function refreshAll(){
+  try{
+    const [he,ic,pr,st,si,qu,se,cf]=await Promise.allSettled([
+      req('/health'),req('/stage1/icps'),req('/stage2/prospects?perPage=200'),
+      req('/stage2/stats'),req('/stage3/signals?perPage=200'),
+      req('/stage5/queue?perPage=200&includeAll=true'),req('/stage5/sent?perPage=200'),
+      fetch(BASE+'/config').then(r=>r.json()).catch(()=>null)
+    ]);
+    if(he.status==='fulfilled')S.stats=he.value.counts;
+    if(ic.status==='fulfilled')S.icps=ic.value.icps;
+    if(pr.status==='fulfilled')S.prospects=pr.value.prospects;
+    if(st.status==='fulfilled')S.ps=st.value;
+    if(si.status==='fulfilled')S.signals=si.value.signals;
+    if(qu.status==='fulfilled'){S.queue=qu.value.drafts;S.drafts=qu.value.drafts}
+    if(se.status==='fulfilled'){S.sent=se.value.emails;S.es=se.value.stats}
+    if(cf.status==='fulfilled'&&cf.value)S.llm=cf.value;
+    renderAll();
+  }catch(e){console.error(e)}
+}
+
+function renderAll(){rStats();rProvider();rICPs();renderProspects();rSignals();rDrafts();rQueue();rSent()}
+
+function rProvider(){
+  if(!S.llm)return;
+  const m={groq:'Groq (Free)',anthropic:'Claude',openai:'OpenAI',demo:'Demo Mode'};
+  $('plabel').textContent=m[S.llm.provider]||S.llm.provider;
+  const d=document.querySelector('.pd');
+  if(d)d.style.background=S.llm.configured?'var(--g)':'var(--t3)';
+}
+
+function rStats(){
+  const s=S.stats,ps=S.ps,es=S.es;
+  $('pf0').textContent=s.icps; $('pf1').textContent=s.prospects;
+  $('pf2').textContent=s.signals; $('pf3').textContent=s.drafts; $('pf4').textContent=s.sentEmails;
+  $('k0').textContent=s.icps; $('k1').textContent=s.prospects;
+  $('k1s').textContent=`${ps.hot} hot · ${ps.warm} warm`;
+  $('k2').textContent=s.signals; $('k3').textContent=s.drafts; $('k4').textContent=s.sentEmails;
+  $('k5').textContent=es.openRate+'%'; $('k5s').textContent=es.replyRate+'% reply';
+  if(s.icps>0){$('heroBox').style.display='none';$('quickBox').style.display='none'}
+  else{$('heroBox').style.display='';$('quickBox').style.display=''}
+}
+
+function rICPs(){
+  const el=$('icpBox');
+  if(!S.icps.length){el.innerHTML='<div class="fw7 mb14" style="font-family:\'Syne\',sans-serif">Created ICPs</div><div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Run research to create your first ICP</p></div>';return}
+  el.innerHTML=`<div class="fw7 mb14" style="font-family:'Syne',sans-serif">Created ICPs (${S.icps.length})</div>`+S.icps.map(icp=>{
+    const c=icp.config||{};
+    return`<div class="card card-sm mb10" style="border-color:rgba(124,92,252,.2)">
+      <div class="flex aic jb mb6"><span class="fw6 ts">${h(icp.name)}</span><span class="badge ba">v${icp.version}</span></div>
+      ${c.summary?`<div class="ts tx mb6">${h(String(c.summary))}</div>`:''}
+      ${c.painPoints?.length?`<div class="flex fw gap6">${c.painPoints.map(p=>`<span class="badge" style="background:rgba(248,113,113,.08);color:var(--r);border-color:rgba(248,113,113,.18)">${h(String(p))}</span>`).join('')}</div>`:''}
+    </div>`}).join('');
+}
+
+function renderProspects(){
+  const f=$('pfilter').value, list=f==='all'?S.prospects:S.prospects.filter(p=>p.status===f);
+  const ps=S.ps;
+  $('p2sub').textContent=`${ps.total} total · ${ps.hot} hot · ${ps.warm} warm · ${ps.cold} cold`;
+  $('ptbl').innerHTML=!list.length?`<tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>${S.prospects.length?'No matches':'No prospects yet'}</h3><p>${S.prospects.length?'Change filter':'Run Research first'}</p></div></td></tr>`:
+    list.map(p=>`<tr>
+      <td><div class="flex aic gap8"><div class="av">${ini(p.contact?.full_name)}</div><div><div class="fw6 ts">${h(p.contact?.full_name||'')}</div><div class="tss tx">${h(p.contact?.title||'')}</div></div></div></td>
+      <td><div class="fw6 ts">${h(p.company?.name||'')}</div><div class="tss tx">${h(p.company?.industry||'')}</div></td>
+      <td>${scoreBar(p.icpScore)}</td><td>${scoreBar(p.intentScore)}</td>
+      <td>${sbadge(p.status)}</td>
+    </tr>`).join('');
+}
+
+function rSignals(){
+  const s=S.signals;
+  $('s3sub').textContent=`${s.length} signals detected`;
+  if(!s.length){$('sigBox').innerHTML='<div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Collect signals to detect buying intent</p></div>';return}
+  $('sigBox').innerHTML=s.map(sg=>`<div class="sgi">
+    <div class="sgic" style="background:rgba(251,191,36,.08)">${sigicon(sg.signalType)}</div>
+    <div class="f1 mn0">
+      <div class="flex aic gap6 mb6 fw">${sigbadge(sg.signalType)}<span class="tss tx">via ${h(sg.source)}</span></div>
+      <div class="fw6 ts">${h(sg.humanSummary)}</div>
+      <div class="tss tx" style="margin-top:3px">${h(sg.prospect?.contact?.full_name||'')} · ${h(sg.prospect?.company?.name||'')}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0"><div class="fw7 ts" style="color:var(--a)">${Math.round(sg.weight*100)}</div><div class="tss tx">${new Date(sg.detectedAt).toLocaleDateString()}</div></div>
+  </div>`).join('');
+}
+
+function rDrafts(){
+  $('s4sub').textContent=`${S.drafts.length} drafts`;
+  if(!S.drafts.length){$('draftBox').innerHTML='<div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Generate emails for hot & warm prospects</p></div>';return}
+  $('draftBox').innerHTML=S.drafts.map(d=>`<div class="di" onclick="previewDraft('${d.id}')">
+    <div class="av">${ini(d.prospect?.contact?.full_name)}</div>
+    <div class="f1 mn0">
+      <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">· ${h(d.prospect?.company?.name||'')}</span></div>
+      <div class="fw6 ts trunc mb6">${h(d.editedSubject||d.subjectLines?.[0]||'No subject')}</div>
+      <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,110))}…</div>
+      <div class="dm"><span>📝 ${d.wordCount}w</span><span>🚫 spam ${d.spamScore?.toFixed(1)}</span><span>📖 G${d.readabilityGrade?.toFixed(1)}</span></div>
+    </div>
+    <div style="color:var(--t3);font-size:16px">›</div>
+  </div>`).join('');
+}
+
+function rQueue(){
+  const pending=S.queue.filter(d=>d.status==='pending'), approved=S.queue.filter(d=>d.status==='approved');
+  $('s5sub').textContent=`${pending.length} pending · ${approved.length} approved`;
+  if(!S.queue.length){$('queueBox').innerHTML='<div class="emp"><div class="ei">📬</div><h3>No emails in queue</h3><p>Generate and approve emails first</p></div>';return}
+  $('queueBox').innerHTML=`<div class="flex aic jb mb10">
+    <div class="fw7" style="font-family:'Syne',sans-serif">Approval Queue</div>
+    <div class="flex gap6">${pending.length?`<span class="badge bp">${pending.length} pending</span>`:''} ${approved.length?`<span class="badge ba">${approved.length} approved</span>`:''}</div>
+  </div>`+S.queue.map(d=>`<div class="di" style="margin-bottom:7px">
+    <div class="av" style="background:linear-gradient(135deg,var(--r),#f43f5e)">${ini(d.prospect?.contact?.full_name)}</div>
+    <div class="f1 mn0">
+      <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">${h(d.prospect?.contact?.title||'')} · ${h(d.prospect?.company?.name||'')}</span></div>
+      <div class="tss tx mb6">ICP <b>${Math.round(d.prospect?.icpScore||0)}</b> · Intent <b>${Math.round(d.prospect?.intentScore||0)}</b> · Spam <b>${d.spamScore?.toFixed(1)}</b> · ${d.wordCount}w</div>
+      <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,140))}…</div>
+    </div>
+    ${d.status==='pending'?`<div class="abs">
+      <button class="ab ap" onclick="approve('${d.id}','approve',event)" title="Approve">✓</button>
+      <button class="ab ed" onclick="editDraftOpen('${d.id}',event)" title="Edit">✎</button>
+      <button class="ab sk" onclick="approve('${d.id}','skip',event)" title="Skip">⊘</button>
+    </div>`:''}
+  </div>`).join('');
+}
+
+function rSent(){
+  const es=S.es;
+  if(es.sent>0){
+    $('emailStatBox').style.display='grid';
+    $('es0').textContent=es.openRate+'%';$('es1').textContent=es.replyRate+'%';$('es2').textContent=es.bounceRate+'%';
+    $('sentBox').style.display='';
+    $('sentTbl').innerHTML=S.sent.map(e=>`<tr>
+      <td><div class="fw6 ts">${h(e.prospect?.contact?.full_name||'')}</div><div class="tss tx">${h(e.recipientEmail)}</div></td>
+      <td class="trunc" style="max-width:160px"><span class="ts tx">${h(e.subject)}</span></td>
+      <td><span class="badge bc">${h(e.sendProvider)}</span></td>
+      <td style="text-align:center">${e.openedAt?'<span style="color:var(--g)">✓</span>':'<span style="color:var(--b1)">—</span>'}</td>
+      <td style="text-align:center">${e.repliedAt?'<span style="color:var(--b)">✓</span>':'<span style="color:var(--b1)">—</span>'}</td>
+      <td style="text-align:center">${e.bounced?'<span style="color:var(--r)">⚠</span>':'<span style="color:var(--b1)">—</span>'}</td>
+    </tr>`).join('');
+  }else{$('emailStatBox').style.display='none';$('sentBox').style.display='none'}
+}
+
+// ── Actions ─────────────────────────────────────────────────
+async function runPipeline(){
+  setBtn('heroBtn',true,'Running');
+  try{
+    const r=await req('/pipeline/run',{method:'POST',body:JSON.stringify({
+      industries:['SaaS','FinTech'],companySizeMin:50,companySizeMax:1000,
+      targetTitles:['VP Sales','CRO','Head of Growth'],seniority:['VP','C-Suite','Director'],
+      geographies:['US','UK'],techSignals:['Salesforce','HubSpot'],painKeywords:['outbound','pipeline','conversion']
+    })});
+    toast(`✅ ${r.pipeline.stage2.prospectsEnriched} prospects · ${r.pipeline.stage3.signalsCollected} signals · ${r.pipeline.stage4.draftsGenerated} drafts`);
+    await refreshAll(); go('s5');
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('heroBtn',false)}
+}
+
+async function runResearch(){
+  setBtn('resBtn',true,'Researching');
+  try{
+    const sp=id=>$(id).value.split(',').map(s=>s.trim()).filter(Boolean);
+    const r=await req('/stage1/research',{method:'POST',body:JSON.stringify({
+      industries:sp('fi'),companySizeMin:parseInt($('fmin').value)||50,
+      companySizeMax:parseInt($('fmax').value)||2000,targetTitles:sp('ft'),
+      seniority:['VP','C-Suite','Director'],geographies:sp('fg'),techSignals:sp('ftech'),painKeywords:sp('fp')
+    })});
+    toast(`✅ ICP created — ${r.prospectCount} prospects`);
+    await refreshAll();
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('resBtn',false)}
+}
+
+async function enrichProspects(){
+  if(!S.icps.length){toast('Create an ICP first','er');return}
+  setBtn('enrBtn',true,'Enriching');
+  try{
+    const r=await req('/stage2/enrich',{method:'POST',body:JSON.stringify({icpId:S.icps[0].id})});
+    toast(`✅ ${r.enriched} prospects enriched`);await refreshAll();
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('enrBtn',false)}
+}
+
+async function collectSignals(){
+  setBtn('sigBtn',true,'Collecting');
+  try{
+    const r=await req('/stage3/collect',{method:'POST',body:JSON.stringify({})});
+    toast(`✅ ${r.totalSignals} signals`);await refreshAll();
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('sigBtn',false)}
+}
+
+async function generateEmails(){
+  const need=S.prospects.filter(p=>(p.status==='hot'||p.status==='warm')&&p.draftCount===0);
+  if(!need.length){toast('All hot/warm prospects have drafts');return}
+  setBtn('genBtn',true,'Generating');
+  try{
+    const r=await req('/stage4/generate-batch',{method:'POST',body:JSON.stringify({prospectIds:need.map(p=>p.id)})});
+    toast(`✅ ${r.created} emails generated`);await refreshAll();
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('genBtn',false)}
+}
+
+async function approve(id,action,e){
+  e?.stopPropagation();
+  try{
+    await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action})});
+    toast(action==='approve'?'✅ Approved':'Skipped');await refreshAll();
+  }catch(e){toast(e.message,'er')}
+}
+
+async function sendAll(){
+  const n=S.queue.filter(d=>d.status==='approved').length;
+  if(!n){toast('No approved emails','er');return}
+  setBtn('sndBtn',true,'Sending');
+  try{
+    const r=await req('/stage5/send-all',{method:'POST'});
+    toast(`✅ ${r.sent} emails sent`);await refreshAll();
+  }catch(e){toast(e.message,'er')}
+  finally{setBtn('sndBtn',false)}
+}
+
+// ── Modal ──────────────────────────────────────────────────
+function previewDraft(id){
+  const d=S.drafts.find(x=>x.id===id)||S.queue.find(x=>x.id===id);
+  if(!d)return; S.cur=d;
+  $('mTitle').textContent='Email Preview';
+  $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.contact?.title||''} · ${d.prospect?.company?.name||''}`;
+  $('mBody').innerHTML=`
+    <div class="mb14">
+      <div class="tss tx mb8" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Subject Lines</div>
+      ${(d.subjectLines||[]).map((s,i)=>`<div style="padding:9px 12px;border-radius:7px;margin-bottom:5px;font-size:13px;${i===0?'background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.2);font-weight:600':'background:var(--s2);color:var(--t3)'}"><span style="opacity:.4;margin-right:7px;font-family:monospace">#${i+1}</span>${h(s)}</div>`).join('')}
+    </div>
+    <div class="sep"></div>
+    <div class="mb14">
+      <div class="flex aic jb mb8">
+        <div class="tss tx" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Email Body</div>
+        <button class="btn btn-s btn-sm" onclick="copyEmail()">📋 Copy</button>
+      </div>
+      <div class="eb">${h(d.editedBody||d.body||'')}</div>
+    </div>
+    <div class="g3 mb14">
+      <div class="kpi" style="padding:11px"><div class="kl">Spam</div><div class="kv" style="font-size:18px;${(d.spamScore||0)<=3?'color:var(--g)':(d.spamScore||0)<=5?'color:var(--a)':'color:var(--r)'}">${(d.spamScore||0).toFixed(1)}</div></div>
+      <div class="kpi" style="padding:11px"><div class="kl">Readability</div><div class="kv" style="font-size:18px;color:var(--b)">G${(d.readabilityGrade||0).toFixed(1)}</div></div>
+      <div class="kpi" style="padding:11px"><div class="kl">Words</div><div class="kv" style="font-size:18px;color:var(--v2)">${d.wordCount||0}</div></div>
+    </div>
+    ${d.status==='pending'?`<div class="flex gap8"><button class="btn btn-p w100" onclick="approve('${d.id}','approve');closeModal()">✓ Approve</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`:''}`;
+  $('modal').classList.add('on');
+}
+
+function editDraftOpen(id,e){
+  e?.stopPropagation();
+  const d=S.queue.find(x=>x.id===id);if(!d)return;
+  $('mTitle').textContent='Edit & Approve';
+  $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.company?.name||''}`;
+  $('mBody').innerHTML=`
+    <div class="fld"><label>Subject</label><input id="es" value="${h(d.editedSubject||d.subjectLines?.[0]||'')}"/></div>
+    <div class="fld"><label>Body <span class="tx" id="wc">${d.wordCount}w</span></label>
+      <textarea id="eb" rows="11" oninput="$('wc').textContent=this.value.split(/\\s+/).filter(Boolean).length+'w'">${h(d.editedBody||d.body||'')}</textarea></div>
+    <div class="flex gap8"><button class="btn btn-p w100" onclick="saveEdit('${d.id}')">✓ Save & Approve</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`;
+  $('modal').classList.add('on');
+}
+
+async function saveEdit(id){
+  try{
+    await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action:'edit',editedSubject:$('es')?.value,editedBody:$('eb')?.value})});
+    toast('✅ Edited & Approved');closeModal();await refreshAll();
+  }catch(e){toast(e.message,'er')}
+}
+
+function copyEmail(){navigator.clipboard.writeText(S.cur?.editedBody||S.cur?.body||'').then(()=>toast('📋 Copied!'))}
+function closeModal(){$('modal').classList.remove('on')}
+function outsideClose(e){if(e.target===$('modal'))closeModal()}
+
+async function doReset(){
+  if(!confirm('Reset ALL data?'))return;
+  const sec=prompt('Admin secret:','');
+  try{
+    await req('/admin/reset',{method:'DELETE',headers:{'x-admin-secret':sec||''}});
+    toast('Data reset');await refreshAll();
+  }catch(e){toast(e.message,'er')}
+}
+
+refreshAll();
+</script>
+</body>
+</html>
