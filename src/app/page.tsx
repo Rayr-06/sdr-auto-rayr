@@ -440,14 +440,15 @@ function Stage1Tab({ icps, onRefresh }: { icps:ICP[]; onRefresh:()=>void }) {
                       </AccordionTrigger>
                       <AccordionContent className="pb-4 pt-1">
                         <div className="space-y-3 text-sm">
-                          {c.summary && <p className="text-muted-foreground leading-relaxed">{String(c.summary)}</p>}
+                          {c.summary ? <p className="text-muted-foreground leading-relaxed">{String(c.summary)}</p> : null}
                           {(['painPoints','buyingSignals','competitors'] as const).map(key => {
                             const items = c[key];
                             if (!items || !Array.isArray(items)) return null;
-                            const meta = { painPoints:['Pain Points','bg-rose-50 text-rose-700'], buyingSignals:['Buying Signals','bg-blue-50 text-blue-700'], competitors:['Competitors','bg-orange-50 text-orange-700'] }[key];
+                            const metaMap: Record<string, [string, string]> = { painPoints:['Pain Points','bg-rose-50 text-rose-700'], buyingSignals:['Buying Signals','bg-blue-50 text-blue-700'], competitors:['Competitors','bg-orange-50 text-orange-700'] };
+                            const meta = metaMap[key];
                             return (
                               <div key={key}>
-                                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{String(meta[0])}</p>
+                                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{meta[0]}</p>
                                 <div className="flex flex-wrap gap-1">
                                   {(items as string[]).map((item,i) => <Badge key={i} variant="secondary" className={`text-xs ${meta[1]}`}>{String(item)}</Badge>)}
                                 </div>

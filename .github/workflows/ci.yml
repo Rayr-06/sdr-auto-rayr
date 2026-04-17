@@ -2,23 +2,25 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 env:
   DATABASE_URL: file:./db/sdr.db
-  ADMIN_SECRET: ci-test-secret
+  ADMIN_SECRET: ci-secret
+  GROQ_API_KEY: demo
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
@@ -32,17 +34,16 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Type check
+        run: npx tsc --noEmit
+
       - name: Lint
         run: npm run lint
         continue-on-error: true
 
-      - name: Type check
-        run: npx tsc --noEmit
-        continue-on-error: true
-
-      - name: Verify structure
-        run: |
-          echo "✅ src/app/page.tsx exists"     && test -f src/app/page.tsx
-          echo "✅ src/lib/llm.ts exists"       && test -f src/lib/llm.ts
-          echo "✅ prisma/schema.prisma exists" && test -f prisma/schema.prisma
-          echo "✅ All critical files present"
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: file:./db/sdr.db
+          ADMIN_SECRET: ci-secret
+          NEXT_TELEMETRY_DISABLED: 1
