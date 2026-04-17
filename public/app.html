@@ -9,277 +9,294 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07070f;--s1:#0f0f1a;--s2:#161625;--s3:#1d1d2e;
-  --b1:#ffffff08;--b2:#ffffff12;--b3:#ffffff20;
-  --t1:#eeeef8;--t2:#9090b0;--t3:#606080;
+  --b1:#ffffff0a;--b2:#ffffff14;--b3:#ffffff22;
+  --t1:#eeeef8;--t2:#a0a0c0;--t3:#7070a0;
   --v:#7c5cfc;--v2:#a78bfa;--v3:#c4b5fd;
   --g:#34d399;--a:#fbbf24;--r:#f87171;--b:#60a5fa;
   --rad:10px;--rad2:14px;--rad3:20px;
-  /* Demo mode colors */
-  --demo-bg:rgba(251,191,36,.06);--demo-border:rgba(251,191,36,.25);--demo-text:#fbbf24;
-  /* Live mode colors */
-  --live-bg:rgba(52,211,153,.06);--live-border:rgba(52,211,153,.25);--live-text:#34d399;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 70% 40% at 15% 0%,#7c5cfc18,transparent 60%),
-             radial-gradient(ellipse 50% 50% at 85% 100%,#34d39910,transparent 60%)}
+  background:radial-gradient(ellipse 60% 35% at 10% 0%,#7c5cfc15,transparent),
+             radial-gradient(ellipse 40% 45% at 90% 100%,#34d3990e,transparent)}
 #app{min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
 
-/* ─ Header ─── */
-.hd{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;
-  border-bottom:1px solid var(--b1);background:rgba(7,7,15,.88);backdrop-filter:blur(16px);
+/* ─ Header ─ */
+.hd{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  border-bottom:1px solid var(--b1);background:rgba(7,7,15,.9);backdrop-filter:blur(20px);
   position:sticky;top:0;z-index:50}
-.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
-.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--v),var(--v2));border-radius:8px;
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.lm{width:28px;height:28px;background:linear-gradient(135deg,var(--v),var(--v2));border-radius:7px;
   display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;
-  font-weight:800;font-size:12px;color:#fff}
-.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
-.ls{font-size:11px;color:var(--t3);display:block;margin-top:1px}
-.hd-r{display:flex;align-items:center;gap:8px}
+  font-weight:800;font-size:11px;color:#fff;flex-shrink:0}
+.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;line-height:1}
+.ls{font-size:10px;color:var(--t3);display:block;margin-top:1px}
+.hd-r{display:flex;align-items:center;gap:6px;flex-shrink:0}
 
-/* ─ Demo/Live banner ─── */
-.mode-banner{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;
-  font-size:11px;font-weight:700;border:1px solid;cursor:pointer;transition:.15s}
-.mode-banner.demo{background:var(--demo-bg);border-color:var(--demo-border);color:var(--demo-text)}
-.mode-banner.live{background:var(--live-bg);border-color:var(--live-border);color:var(--live-text)}
-.mode-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
-.mode-banner.demo .mode-dot{background:var(--demo-text)}
-.mode-banner.live .mode-dot{background:var(--live-text)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+/* ─ Mode banner ─ */
+.mb{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;
+  font-size:11px;font-weight:700;border:1px solid;cursor:pointer;transition:.2s;white-space:nowrap}
+.mb.demo{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.25);color:#fbbf24}
+.mb.partial{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.25);color:#60a5fa}
+.mb.live{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.25);color:#34d399}
+.mb .dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ─ Nav ─── */
+/* ─ Nav ─ */
 .nav{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--b1);
-  background:rgba(15,15,26,.6);padding:0 20px}
+  background:rgba(15,15,26,.7);padding:0 20px}
 .nav::-webkit-scrollbar{display:none}
-.nb{display:flex;align-items:center;gap:6px;padding:11px 14px;font-size:13px;font-weight:500;
+.nb{display:flex;align-items:center;gap:5px;padding:10px 13px;font-size:12px;font-weight:600;
   color:var(--t3);border:none;background:none;cursor:pointer;white-space:nowrap;
-  border-bottom:2px solid transparent;transition:.15s;font-family:'DM Sans',sans-serif}
-.nb:hover{color:var(--t1)}.nb.on{color:var(--v3);border-bottom-color:var(--v)}
-.nb svg{width:14px;height:14px;flex-shrink:0}
-.nb .badge-count{background:rgba(248,113,113,.15);color:var(--r);border-radius:99px;
-  padding:1px 6px;font-size:10px;font-weight:700}
+  border-bottom:2px solid transparent;transition:.15s;font-family:'DM Sans',sans-serif;position:relative}
+.nb:hover{color:var(--t2)}.nb.on{color:var(--v3);border-bottom-color:var(--v)}
+.nb svg{width:13px;height:13px;flex-shrink:0}
+.nbc{background:rgba(248,113,113,.18);color:var(--r);border-radius:99px;
+  padding:1px 5px;font-size:9px;font-weight:800;margin-left:2px}
 
-/* ─ Main ─── */
-.main{flex:1;max-width:1140px;width:100%;margin:0 auto;padding:28px 20px}
-.tab{display:none}.tab.on{display:block;animation:fu .25s ease-out}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ─ Main ─ */
+.main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:24px 20px}
+.tab{display:none;animation:fu .2s ease-out}
+.tab.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* ─ Demo mode overlay on cards ─── */
-.demo-watermark{position:relative}
-.demo-watermark::after{content:'DEMO DATA';position:absolute;top:8px;right:8px;
-  font-size:9px;font-weight:800;letter-spacing:.1em;padding:2px 7px;border-radius:99px;
-  background:var(--demo-bg);color:var(--demo-text);border:1px solid var(--demo-border);pointer-events:none}
-
-/* ─ Cards ─── */
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:22px;transition:.2s}
+/* ─ Cards ─ */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:20px;transition:.2s}
 .card:hover{border-color:var(--b2)}
-.card-sm{padding:14px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
-@media(max-width:560px){.g4{grid-template-columns:1fr 1fr}}
+.card-sm{padding:13px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:540px){.g6{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
 
-/* ─ KPI ─── */
-.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:16px;transition:.2s;animation:fu .4s both}
+/* ─ KPI ─ */
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:14px;transition:.2s;animation:fu .4s both}
 .kpi:hover{border-color:var(--b2);transform:translateY(-1px)}
-.kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px}
-.kv{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;line-height:1}
-.ks{font-size:11px;color:var(--t3);margin-top:5px}
+.kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:6px}
+.kv{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;line-height:1}
+.ks{font-size:11px;color:var(--t3);margin-top:4px}
 
-/* ─ Integration cards ─── */
-.int-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:18px;
-  display:flex;flex-direction:column;gap:12px;transition:.2s}
-.int-card:hover{border-color:var(--b2)}
-.int-card.connected{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.03)}
-.int-card.partial{border-color:rgba(251,191,36,.2)}
-.int-header{display:flex;align-items:center;justify-content:space-between}
-.int-logo{display:flex;align-items:center;gap:10px}
-.int-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--b2)}
-.int-name{font-weight:700;font-size:14px}
-.int-cat{font-size:11px;color:var(--t3);margin-top:1px}
-.int-status{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
-.int-status.live{color:var(--g)}.int-status.demo{color:var(--a)}.int-status.off{color:var(--t3)}
-.int-desc{font-size:12px;color:var(--t2);line-height:1.5}
-.int-fields{display:flex;flex-direction:column;gap:8px}
-.int-field{display:flex;flex-direction:column;gap:4px}
-.int-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
-.int-field input{background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:8px 11px;
-  color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;
-  font-family:'JetBrains Mono',monospace;font-size:12px;transition:.15s}
-.int-field input:focus{border-color:rgba(124,92,252,.4);box-shadow:0 0 0 2px rgba(124,92,252,.1)}
-.int-field input::placeholder{color:var(--t3)}
-.int-actions{display:flex;gap:8px}
-
-/* ─ Hero ─── */
-.hero{background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(167,139,250,.05));
-  border:1px solid rgba(124,92,252,.18);border-radius:var(--rad3);padding:40px 36px;
-  position:relative;overflow:hidden;margin-bottom:24px}
-.hero::after{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;
-  border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,.12),transparent 70%)}
-.htag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
-  background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.22);
-  border-radius:99px;font-size:11px;font-weight:700;color:var(--v3);margin-bottom:16px}
-.hero h2{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,38px);font-weight:800;
-  letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
+/* ─ Hero ─ */
+.hero{background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(167,139,250,.04));
+  border:1px solid rgba(124,92,252,.16);border-radius:var(--rad3);padding:36px 32px;
+  position:relative;overflow:hidden;margin-bottom:20px}
+.hero::after{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;
+  border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,.1),transparent 70%)}
+.htag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;
+  background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.2);
+  border-radius:99px;font-size:10px;font-weight:700;color:var(--v3);margin-bottom:14px}
+.hero h2{font-family:'Syne',sans-serif;font-size:clamp(22px,3.5vw,36px);font-weight:800;
+  letter-spacing:-.03em;line-height:1.1;margin-bottom:8px}
 .hero h2 em{font-style:normal;background:linear-gradient(90deg,var(--v3),var(--g));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{font-size:14px;color:var(--t2);max-width:460px;line-height:1.6;margin-bottom:20px}
+.hero p{font-size:13px;color:var(--t2);max-width:440px;line-height:1.6;margin-bottom:18px}
 
-/* ─ Demo mode alert ─── */
-.demo-alert{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);
-  border-radius:var(--rad);padding:14px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
-.demo-alert-icon{font-size:18px;flex-shrink:0;margin-top:-1px}
-.demo-alert-text{font-size:13px;color:var(--a);line-height:1.5}
-.demo-alert-text b{font-weight:700}
-.demo-alert-text a{color:var(--a);text-decoration:underline;cursor:pointer}
+/* ─ Demo / Live banners ─ */
+.demo-alert{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);
+  border-radius:var(--rad);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+.da-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.da-text{font-size:12px;color:#fbbf24;line-height:1.55}
+.da-text b{font-weight:700}.da-text a{color:#fbbf24;text-decoration:underline;cursor:pointer}
+.live-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;
+  background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);
+  border-radius:99px;font-size:10px;font-weight:700;color:var(--g);margin-bottom:14px}
 
-/* ─ Pipeline flow ─── */
-.pflow{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+/* ─ Source tag ─ */
+.stag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;
+  font-size:11px;font-weight:700;border:1px solid;margin-bottom:12px}
+.stag.demo{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.18);color:#fbbf24}
+.stag.live{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.18);color:#34d399}
+
+/* ─ Pipeline flow ─ */
+.pflow{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 .pflow::-webkit-scrollbar{display:none}
-.psb{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:72px;
-  background:none;border:none;cursor:pointer;padding:10px 6px;border-radius:var(--rad);transition:.15s;color:var(--t1)}
+.psb{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:68px;
+  background:none;border:none;cursor:pointer;padding:8px 4px;border-radius:var(--rad);transition:.15s;color:var(--t1)}
 .psb:hover{background:var(--s2)}
-.psi{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--b1);transition:.15s}
-.psb:hover .psi{border-color:var(--b2);transform:scale(1.06)}
-.psc{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
-.psl{font-size:10px;font-weight:500;color:var(--t3)}
-.arr{color:var(--b2);flex-shrink:0;font-size:14px;margin-top:-14px}
-.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){.g6{grid-template-columns:repeat(2,1fr)}}
+.psi{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--b1);transition:.2s}
+.psb:hover .psi{border-color:var(--b2);transform:scale(1.07)}
+.psc{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;transition:all .3s}
+.psl{font-size:10px;font-weight:600;color:var(--t3)}
+.arr{color:var(--b2);flex-shrink:0;font-size:12px;margin-top:-12px}
 
-/* ─ Buttons ─── */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rad);
+/* ─ Buttons ─ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--rad);
   font-weight:600;font-size:13px;border:none;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
 .btn-p{background:var(--v);color:#fff}.btn-p:hover{background:#6d4ef0;transform:translateY(-1px)}
-.btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-s{background:var(--s2);color:var(--t1);border:1px solid var(--b2)}.btn-s:hover{border-color:var(--b3);background:var(--s3)}
-.btn-g{background:rgba(52,211,153,.12);color:var(--g);border:1px solid rgba(52,211,153,.25)}.btn-g:hover{background:rgba(52,211,153,.18)}
-.btn-sm{padding:7px 14px;font-size:12px}
-.btn-ic{width:32px;height:32px;padding:0;justify-content:center;border-radius:8px}
-.btn-d{background:rgba(248,113,113,.1);color:var(--r);border:1px solid rgba(248,113,113,.2)}.btn-d:hover{background:rgba(248,113,113,.18)}
+.btn-p:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-s{background:var(--s2);color:var(--t1);border:1px solid var(--b2)}.btn-s:hover{border-color:var(--b3)}
+.btn-g{background:rgba(52,211,153,.1);color:var(--g);border:1px solid rgba(52,211,153,.2)}.btn-g:hover{background:rgba(52,211,153,.16)}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-ic{width:30px;height:30px;padding:0;justify-content:center;border-radius:7px}
+.btn-full{width:100%}
 
-/* ─ Forms ─── */
-.fld{margin-bottom:14px}
+/* ─ Forms ─ */
+.fld{margin-bottom:13px}
 .fld label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
+  letter-spacing:.08em;color:var(--t3);margin-bottom:4px}
 .fld input,.fld textarea,.fld select{width:100%;background:var(--s2);border:1px solid var(--b2);
-  border-radius:8px;padding:9px 11px;color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;
+  border-radius:8px;padding:8px 10px;color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;
   transition:.15s;outline:none}
-.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 2px rgba(124,92,252,.1)}
+.fld input:focus,.fld textarea:focus{border-color:rgba(124,92,252,.45);box-shadow:0 0 0 2px rgba(124,92,252,.08)}
 .fld input::placeholder{color:var(--t3)}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:560px){.r2{grid-template-columns:1fr}}
+@media(max-width:540px){.r2{grid-template-columns:1fr}}
 
-/* ─ Table ─── */
+/* ─ Table ─ */
 .tw{overflow-x:auto;border-radius:var(--rad);border:1px solid var(--b1)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead tr{background:var(--s2)}
-th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--t3);white-space:nowrap}
-td{padding:11px 14px;border-top:1px solid var(--b1);vertical-align:middle}
-tr:hover td{background:rgba(255,255,255,.015)}
-.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--v),var(--v2));
-  display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+th{text-align:left;padding:10px 13px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
+td{padding:10px 13px;border-top:1px solid var(--b1);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.012)}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--v),var(--v2));
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
 
-/* ─ Badges ─── */
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;
+/* ─ Badges ─ */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;
   font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap}
-.bh{background:rgba(248,113,113,.1);color:var(--r);border-color:rgba(248,113,113,.2)}
-.bw{background:rgba(251,191,36,.1);color:var(--a);border-color:rgba(251,191,36,.2)}
-.bc{background:rgba(107,107,138,.15);color:var(--t3);border-color:rgba(107,107,138,.2)}
-.bp{background:rgba(251,191,36,.1);color:var(--a);border-color:rgba(251,191,36,.2)}
-.ba{background:rgba(52,211,153,.1);color:var(--g);border-color:rgba(52,211,153,.2)}
-.bs{background:rgba(96,165,250,.1);color:var(--b);border-color:rgba(96,165,250,.2)}
-.bsig{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
-.sf{background:rgba(52,211,153,.1);color:var(--g)}.sh{background:rgba(251,191,36,.1);color:var(--a)}
-.sn{background:rgba(96,165,250,.1);color:var(--b)}.st{background:rgba(167,139,250,.1);color:var(--v2)}
-.se{background:rgba(52,211,153,.1);color:var(--g)}.sl{background:rgba(248,113,113,.1);color:var(--r)}
+.bh{background:rgba(248,113,113,.1);color:#f87171;border-color:rgba(248,113,113,.2)}
+.bw{background:rgba(251,191,36,.1);color:#fbbf24;border-color:rgba(251,191,36,.2)}
+.bc{background:rgba(112,112,160,.15);color:var(--t3);border-color:rgba(112,112,160,.2)}
+.bp{background:rgba(251,191,36,.1);color:#fbbf24;border-color:rgba(251,191,36,.2)}
+.ba{background:rgba(52,211,153,.1);color:#34d399;border-color:rgba(52,211,153,.2)}
+.bbs{background:rgba(96,165,250,.1);color:#60a5fa;border-color:rgba(96,165,250,.2)}
+.bsig{padding:2px 6px;border-radius:5px;font-size:10px;font-weight:700}
+.sf{background:rgba(52,211,153,.1);color:#34d399}.sh{background:rgba(251,191,36,.1);color:#fbbf24}
+.sn{background:rgba(96,165,250,.1);color:#60a5fa}.st{background:rgba(167,139,250,.1);color:#a78bfa}
+.se{background:rgba(52,211,153,.1);color:#34d399}.sl{background:rgba(248,113,113,.1);color:#f87171}
 .sp{background:rgba(129,140,248,.1);color:#818cf8}
+/* Demo/Real data badges */
+.badge-demo{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2);font-size:9px;padding:1px 5px;border-radius:99px;font-weight:700}
+.badge-real{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.2);font-size:9px;padding:1px 5px;border-radius:99px;font-weight:700}
 
-/* ─ Score bar ─── */
-.sb{display:flex;align-items:center;gap:7px;min-width:76px}
-.st2{flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+/* ─ Score bar ─ */
+.sb{display:flex;align-items:center;gap:6px;min-width:72px}
+.st2{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
 .sf2{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--v),var(--v2))}
-.sn2{font-size:11px;font-weight:700;width:22px;text-align:right;color:var(--t3)}
+.sn2{font-size:11px;font-weight:700;width:20px;text-align:right;color:var(--t3)}
 
-/* ─ Modal ─── */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);
+/* ─ Spam indicator ─ */
+.spam-g{color:#34d399;font-weight:700}.spam-y{color:#fbbf24;font-weight:700}.spam-r{color:#f87171;font-weight:700}
+
+/* ─ Draft item ─ */
+.di{display:flex;align-items:flex-start;gap:10px;padding:13px;border-radius:var(--rad);
+  border:1px solid var(--b1);margin-bottom:7px;cursor:pointer;transition:.15s}
+.di:hover{border-color:var(--b2);background:rgba(124,92,252,.025)}
+.dm{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--t3);margin-top:4px}
+
+/* ─ Queue item ─ */
+.qi{display:flex;align-items:flex-start;gap:10px;padding:13px;border-radius:var(--rad);
+  border:1px solid var(--b1);margin-bottom:7px;transition:.15s}
+.qi:hover{border-color:var(--b2)}
+.qi.pending{border-left:3px solid rgba(251,191,36,.4)}
+.qi.approved{border-left:3px solid rgba(52,211,153,.4)}
+.qi-preview{font-size:12px;color:var(--t2);line-height:1.5;margin-top:5px;
+  border-left:2px solid var(--b2);padding-left:8px}
+
+/* ─ Action buttons ─ */
+.abs{display:flex;gap:4px;flex-shrink:0;margin-top:2px}
+.ab{width:28px;height:28px;border-radius:6px;border:1px solid var(--b1);background:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:.15s;color:var(--t3)}
+.ab:hover{border-color:var(--b2);color:var(--t1)}
+.ab.ap:hover{border-color:rgba(52,211,153,.3);color:#34d399;background:rgba(52,211,153,.06)}
+.ab.ed:hover{border-color:rgba(96,165,250,.3);color:#60a5fa;background:rgba(96,165,250,.06)}
+.ab.sk:hover{border-color:rgba(112,112,160,.3);color:var(--t2)}
+
+/* ─ Signal item ─ */
+.sgi{display:flex;align-items:flex-start;gap:9px;padding:11px 0;border-bottom:1px solid var(--b1)}
+.sgi:last-child{border-bottom:none}
+.sgic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+
+/* ─ Section header ─ */
+.sh3{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.st3{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.ss{font-size:13px;color:var(--t2);margin-top:2px}
+
+/* ─ Progress steps ─ */
+.steps{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);padding:5px 10px;
+  border-radius:var(--rad);border:1px solid var(--b1);background:var(--s1);cursor:pointer;transition:.15s}
+.step:hover{border-color:var(--b2);color:var(--t2)}
+.step.done{color:#34d399;border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.05)}
+.step.active{color:var(--v3);border-color:rgba(124,92,252,.3);background:rgba(124,92,252,.06)}
+.step-num{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;background:currentColor;color:var(--bg)}
+
+/* ─ Empty ─ */
+.emp{text-align:center;padding:48px 16px;color:var(--t3)}
+.ei{font-size:32px;margin-bottom:9px;opacity:.2}
+.emp h3{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:5px}
+.emp p{font-size:12px;line-height:1.5;max-width:260px;margin:0 auto}
+
+/* ─ Integration cards ─ */
+.int-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);
+  padding:16px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.int-card.connected{border-color:rgba(52,211,153,.22);background:rgba(52,211,153,.02)}
+.int-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:16px;border:1px solid var(--b2);flex-shrink:0}
+.int-name{font-weight:700;font-size:13px;line-height:1}
+.int-cat{font-size:10px;color:var(--t3);margin-top:2px}
+.int-status{font-size:10px;font-weight:700}
+.int-status.live{color:#34d399}.int-status.off{color:var(--t3)}
+.int-desc{font-size:11px;color:var(--t2);line-height:1.5}
+.int-field label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:3px;display:block}
+.int-field input{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:6px;
+  padding:7px 9px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace;outline:none;transition:.15s}
+.int-field input:focus{border-color:rgba(124,92,252,.4)}
+.int-field input::placeholder{color:var(--t3)}
+
+/* ─ Modal ─ */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);
   z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;
   opacity:0;pointer-events:none;transition:.2s}
 .mo.on{opacity:1;pointer-events:all}
 .md{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rad3);
-  padding:26px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;
+  padding:24px;width:100%;max-width:580px;max-height:88vh;overflow-y:auto;
   transform:scale(.96);transition:.2s}
 .mo.on .md{transform:scale(1)}
-.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.mt2{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
-.mc{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:3px 6px;border-radius:6px;transition:.15s}
+.mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.mt2{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+.mc{background:none;border:none;color:var(--t3);cursor:pointer;font-size:17px;
+  padding:3px 5px;border-radius:5px;transition:.15s;line-height:1}
 .mc:hover{color:var(--t1)}
 .eb{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rad);
-  padding:14px;font-size:12px;white-space:pre-wrap;line-height:1.7;font-family:'JetBrains Mono',monospace;color:var(--t1)}
+  padding:13px;font-size:12px;white-space:pre-wrap;line-height:1.65;
+  font-family:'JetBrains Mono',monospace;color:var(--t1);max-height:300px;overflow-y:auto}
 
-/* ─ Toast ─── */
-.tc{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:7px}
+/* ─ Toast ─ */
+.tc{position:fixed;bottom:18px;right:18px;z-index:300;display:flex;flex-direction:column;gap:6px}
 .tos{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rad);
-  padding:11px 15px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;
-  animation:fu .3s ease-out;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
-.tok{border-color:rgba(52,211,153,.25)}.ter{border-color:rgba(248,113,113,.25)}
-.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.15);
+  padding:10px 14px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;
+  animation:fu .3s ease-out;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.tok{border-color:rgba(52,211,153,.22)}.ter{border-color:rgba(248,113,113,.22)}.tinf{border-color:rgba(96,165,250,.22)}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.15);
   border-top-color:currentColor;border-radius:50%;animation:rot .7s linear infinite;flex-shrink:0}
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ─ Signal item ─── */
-.sgi{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--b1)}
-.sgi:last-child{border-bottom:none}
-.sgic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+/* ─ Skeleton ─ */
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);
+  background-size:200% 100%;animation:skel 1.5s infinite;border-radius:6px;height:14px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ─ Draft item ─── */
-.di{display:flex;align-items:flex-start;gap:10px;padding:14px;border-radius:var(--rad);
-  border:1px solid var(--b1);margin-bottom:8px;cursor:pointer;transition:.15s}
-.di:hover{border-color:var(--b2);background:rgba(124,92,252,.03)}
-.dm{display:flex;gap:10px;font-size:11px;color:var(--t3);margin-top:4px}
+/* ─ Settings sep ─ */
+.sep{height:1px;background:var(--b1);margin:20px 0}
+.sec-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.sec-sub{font-size:11px;color:var(--t2);margin-bottom:14px}
 
-/* ─ Action buttons ─── */
-.abs{display:flex;gap:5px;flex-shrink:0}
-.ab{width:30px;height:30px;border-radius:7px;border:1px solid var(--b1);background:none;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.15s;color:var(--t3)}
-.ab:hover{border-color:var(--b2);color:var(--t1)}
-.ab.ap:hover{border-color:rgba(52,211,153,.3);color:var(--g);background:rgba(52,211,153,.07)}
-.ab.ed:hover{border-color:rgba(96,165,250,.3);color:var(--b);background:rgba(96,165,250,.07)}
-.ab.sk:hover{border-color:var(--b2);color:var(--t3)}
-
-/* ─ Section header ─── */
-.sh3{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:22px}
-.st3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
-.ss{font-size:13px;color:var(--t2);margin-top:2px}
-
-/* ─ Empty ─── */
-.emp{text-align:center;padding:52px 16px;color:var(--t3)}
-.ei{font-size:36px;margin-bottom:10px;opacity:.25}
-.emp h3{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:5px}
-.emp p{font-size:12px;line-height:1.5}
-
-/* ─ Settings section ─── */
-.settings-section{margin-bottom:32px}
-.settings-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;
-  margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.settings-section-sub{font-size:12px;color:var(--t2);margin-bottom:16px}
-.sep{height:1px;background:var(--b1);margin:24px 0}
-
-/* ─ Footer ─── */
-.ft{border-top:1px solid var(--b1);padding:14px 20px;display:flex;align-items:center;
+/* ─ Footer ─ */
+.ft{border-top:1px solid var(--b1);padding:12px 20px;display:flex;align-items:center;
   justify-content:space-between;font-size:11px;color:var(--t3)}
 .ft a{color:var(--t3);text-decoration:none;transition:.15s}.ft a:hover{color:var(--t1)}
 
-/* ─ Utils ─── */
+/* ─ Utils ─ */
 .flex{display:flex}.aic{align-items:center}.jb{justify-content:space-between}
-.fw{flex-wrap:wrap}.f1{flex:1}.mn0{min-width:0}.gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}
-.mb6{margin-bottom:6px}.mb10{margin-bottom:10px}.mb14{margin-bottom:14px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.fw{flex-wrap:wrap}.f1{flex:1}.mn0{min-width:0}.gap4{gap:4px}.gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}
+.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
 .trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tm{color:var(--t2)}.tx{color:var(--t3)}.ts{font-size:12px}.tss{font-size:11px}
+.tm{color:var(--t2)}.tx{color:var(--t3)}.ts{font-size:12px}.tss{font-size:11px}.tx2{font-size:10px}
 .fw6{font-weight:600}.fw7{font-weight:700}
 .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
 .w100{width:100%}
@@ -288,23 +305,20 @@ tr:hover td{background:rgba(255,255,255,.015)}
 <body>
 <div id="app">
 
-<!-- Header -->
 <header class="hd">
   <a class="logo" href="#">
     <div class="lm">SR</div>
     <div><div class="lt">SDR Autopilot</div><span class="ls">by RAYR · Adithya Sharma</span></div>
   </a>
   <div class="hd-r">
-    <div class="mode-banner demo" id="modeBanner" onclick="go('settings')" title="Click to configure integrations">
-      <span class="mode-dot"></span>
-      <span id="modeLabel">Demo Mode</span>
+    <div class="mb demo" id="modeBanner" onclick="go('settings')" title="Click to configure integrations">
+      <span class="dot"></span><span id="modeLabel">Demo Mode</span>
     </div>
-    <button class="btn btn-s btn-sm btn-ic" onclick="refreshAll()" title="Refresh">↻</button>
-    <button class="btn btn-s btn-sm btn-ic" onclick="doReset()" title="Reset data" style="color:var(--r)">⊗</button>
+    <button class="btn btn-s btn-sm btn-ic" onclick="refreshAll()" title="Refresh data">↻</button>
+    <button class="btn btn-s btn-sm btn-ic" onclick="doReset()" title="Reset all data" style="color:var(--r)">⊗</button>
   </div>
 </header>
 
-<!-- Nav -->
 <nav class="nav">
   <button class="nb on" onclick="go('ov',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview
@@ -321,54 +335,60 @@ tr:hover td{background:rgba(255,255,255,.015)}
   <button class="nb" onclick="go('s4',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Generate
   </button>
-  <button class="nb" onclick="go('s5',this)">
+  <button class="nb" id="sendTab" onclick="go('s5',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send
-    <span class="badge-count" id="pendingCount" style="display:none">0</span>
+    <span class="nbc" id="pendingBadge" style="display:none">0</span>
   </button>
-  <button class="nb" onclick="go('settings',this)">
+  <button class="nb" onclick="go('cfg',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings
   </button>
 </nav>
 
 <main class="main">
 
-<!-- ─ OVERVIEW ───────────────────────────────────────────── -->
+<!-- ── OVERVIEW ────────────────────────────────────────── -->
 <div id="ov" class="tab on">
-  <!-- Demo alert -->
-  <div class="demo-alert" id="demoAlert">
-    <div class="demo-alert-icon">⚠️</div>
-    <div class="demo-alert-text">
-      <b>Demo Mode Active</b> — Prospects and signals are AI-generated, not real data. Emails are simulated.<br/>
-      <a onclick="go('settings')">→ Go to Settings</a> to connect Apollo, ZoomInfo, Hunter or Lusha for real verified prospects.
+  <div id="demoAlert" class="demo-alert">
+    <div class="da-icon">⚠</div>
+    <div class="da-text">
+      <b>Demo Mode</b> — Prospects &amp; signals are AI-generated, not real data. Emails are simulated.<br/>
+      <a onclick="go('cfg')">→ Go to Settings</a> to connect Apollo, ZoomInfo or Hunter for real verified contacts.
     </div>
   </div>
 
-  <div id="heroBox" class="hero mb24">
-    <div class="htag">⚡ AI-Powered · Human-Approved</div>
+  <div id="heroBox" class="hero mb20">
+    <div class="htag">⚡ AI-Powered · Human-Approved · 5-Stage Pipeline</div>
     <h2>Your AI sales pipeline.<br><em>Research to reply in 30 min.</em></h2>
-    <p>5-stage automation: ICP → Prospects → Signals → Emails → Send. AI does the work, you approve every email.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+    <p>Define your ICP → AI finds prospects → detects buying signals → writes personalised emails → you approve → send. Your SDR team focuses on conversations, not grunt work.</p>
+    <div class="flex gap8 fw mb12">
+      <div class="tss tx">⏱ &lt;3 min/prospect</div>
+      <div class="tss tx">👥 100–200 prospects/day</div>
+      <div class="tss tx">📈 3× more meetings</div>
+    </div>
+    <div class="flex gap8 fw">
       <button class="btn btn-p" id="heroBtn" onclick="runPipeline()">▶ Run Full Pipeline</button>
-      <button class="btn btn-s btn-sm" onclick="go('settings')">⚙ Configure Integrations</button>
+      <button class="btn btn-s btn-sm" onclick="go('cfg')">⚙ Connect Real Data</button>
     </div>
   </div>
 
-  <div class="card mb14">
-    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Pipeline Flow · click to navigate</div>
+  <!-- Pipeline flow -->
+  <div class="card mb12">
+    <div class="tx2 tx mb10 fw7" style="text-transform:uppercase;letter-spacing:.08em">Pipeline · click any stage to navigate</div>
     <div class="pflow">
-      <button class="psb" onclick="go('s1')"><div class="psc" id="pf0">0</div><div class="psi" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.15)">🔍</div><div class="psl">Research</div></button>
+      <button class="psb" onclick="go('s1')"><div class="psc" id="pf0">0</div><div class="psi" style="background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.12)">🔍</div><div class="psl">Research</div></button>
       <div class="arr">→</div>
-      <button class="psb" onclick="go('s2')"><div class="psc" id="pf1">0</div><div class="psi" style="background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.15)">👥</div><div class="psl">Prospects</div></button>
+      <button class="psb" onclick="go('s2')"><div class="psc" id="pf1">0</div><div class="psi" style="background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.12)">👥</div><div class="psl">Prospects</div></button>
       <div class="arr">→</div>
-      <button class="psb" onclick="go('s3')"><div class="psc" id="pf2">0</div><div class="psi" style="background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.15)">⚡</div><div class="psl">Signals</div></button>
+      <button class="psb" onclick="go('s3')"><div class="psc" id="pf2">0</div><div class="psi" style="background:rgba(96,165,250,.07);border-color:rgba(96,165,250,.12)">⚡</div><div class="psl">Signals</div></button>
       <div class="arr">→</div>
-      <button class="psb" onclick="go('s4')"><div class="psc" id="pf3">0</div><div class="psi" style="background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.15)">✨</div><div class="psl">Drafts</div></button>
+      <button class="psb" onclick="go('s4')"><div class="psc" id="pf3">0</div><div class="psi" style="background:rgba(167,139,250,.07);border-color:rgba(167,139,250,.12)">✨</div><div class="psl">Drafts</div></button>
       <div class="arr">→</div>
-      <button class="psb" onclick="go('s5')"><div class="psc" id="pf4">0</div><div class="psi" style="background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.15)">📤</div><div class="psl">Sent</div></button>
+      <button class="psb" onclick="go('s5')"><div class="psc" id="pf4">0</div><div class="psi" style="background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.12)">📤</div><div class="psl">Sent</div></button>
     </div>
   </div>
 
-  <div class="g6 mb24">
+  <!-- KPIs -->
+  <div class="g6 mb20">
     <div class="kpi"><div class="kl">ICPs</div><div class="kv" id="k0">0</div></div>
     <div class="kpi"><div class="kl">Prospects</div><div class="kv" id="k1">0</div><div class="ks" id="k1s">—</div></div>
     <div class="kpi"><div class="kl">Signals</div><div class="kv" id="k2">0</div></div>
@@ -376,18 +396,24 @@ tr:hover td{background:rgba(255,255,255,.015)}
     <div class="kpi"><div class="kl">Sent</div><div class="kv" id="k4">0</div></div>
     <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="k5">0%</div><div class="ks" id="k5s">0% reply</div></div>
   </div>
+
+  <!-- Next step guidance (shown when data exists) -->
+  <div id="nextStepBox" style="display:none">
+    <div class="tx2 tx mb8 fw7" style="text-transform:uppercase;letter-spacing:.08em">What to do next →</div>
+    <div id="nextStepContent"></div>
+  </div>
 </div>
 
-<!-- ─ STAGE 1 ─────────────────────────────────────────────── -->
+<!-- ── STAGE 1: RESEARCH ───────────────────────────────── -->
 <div id="s1" class="tab">
   <div class="sh3">
-    <div><div class="st3">Market Research</div><div class="ss">Define ICP → AI generates prospects + competitive analysis</div></div>
+    <div><div class="st3">Market Research</div><div class="ss">Define ICP → AI generates prospect profiles + competitive analysis</div></div>
     <button class="btn btn-p btn-sm" id="resBtn" onclick="runResearch()">🔍 Run Research</button>
   </div>
-  <div id="dataSourceBadge" class="mb14"></div>
+  <div id="resSourceTag"></div>
   <div class="g2">
     <div class="card">
-      <div class="fw7 mb14" style="font-family:'Syne',sans-serif">ICP Configuration</div>
+      <div class="fw7 mb12" style="font-family:'Syne',sans-serif;font-size:14px">ICP Configuration</div>
       <div class="fld"><label>Industries</label><input id="fi" value="SaaS, FinTech, B2B SaaS" placeholder="SaaS, FinTech"/></div>
       <div class="fld"><label>Target Titles</label><input id="ft" value="VP Sales, CRO, Head of Growth" placeholder="VP Sales, CRO"/></div>
       <div class="r2">
@@ -396,236 +422,185 @@ tr:hover td{background:rgba(255,255,255,.015)}
       </div>
       <div class="fld"><label>Geographies</label><input id="fg" value="US, UK, IN" placeholder="US, UK"/></div>
       <div class="fld"><label>Tech Signals</label><input id="ftech" value="Salesforce, HubSpot" placeholder="Salesforce, HubSpot"/></div>
-      <div class="fld"><label>Pain Keywords</label><input id="fp" value="outbound, pipeline, conversion" placeholder="outbound, pipeline"/></div>
+      <div class="fld"><label>Pain Keywords</label><input id="fp" value="outbound, pipeline, conversion" placeholder="pipeline, conversion"/></div>
     </div>
     <div class="card" id="icpBox">
-      <div class="fw7 mb14" style="font-family:'Syne',sans-serif">Created ICPs</div>
-      <div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Run research to create your first ICP</p></div>
+      <div class="fw7 mb12" style="font-family:'Syne',sans-serif;font-size:14px">Created ICPs</div>
+      <div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Fill in the form and click Run Research</p></div>
     </div>
   </div>
 </div>
 
-<!-- ─ STAGE 2 ─────────────────────────────────────────────── -->
+<!-- ── STAGE 2: PROSPECTS ─────────────────────────────── -->
 <div id="s2" class="tab">
   <div class="sh3">
     <div><div class="st3">Prospect Profiling</div><div class="ss" id="p2sub">0 prospects</div></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <select id="pfilter" onchange="renderProspects()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif">
-        <option value="all">All Status</option><option value="hot">🔴 Hot</option>
+    <div class="flex gap8 aic fw">
+      <select id="pfilter" onchange="renderProspects()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:6px 10px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="all">All</option><option value="hot">🔴 Hot</option>
         <option value="warm">🟡 Warm</option><option value="cold">⚪ Cold</option>
       </select>
-      <button class="btn btn-p btn-sm" id="enrBtn" onclick="enrichProspects()">👥 Enrich More</button>
+      <button class="btn btn-p btn-sm" id="enrBtn" onclick="enrichMore()">+ Enrich More</button>
     </div>
   </div>
-  <div id="prospectSourceTag" class="mb14"></div>
+  <div id="prosSourceTag"></div>
   <div class="tw"><table>
-    <thead><tr><th>Contact</th><th>Company</th><th>ICP Score</th><th>Intent</th><th>Status</th></tr></thead>
-    <tbody id="ptbl"><tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>No prospects yet</h3><p>Run Research first</p></div></td></tr></tbody>
+    <thead><tr><th>Contact</th><th>Company</th><th>ICP Fit</th><th>Intent</th><th>Status</th><th>Data</th></tr></thead>
+    <tbody id="ptbl"><tr><td colspan="6"><div class="emp"><div class="ei">👥</div><h3>No prospects yet</h3><p>Run Research in Stage 1 first</p></div></td></tr></tbody>
   </table></div>
 </div>
 
-<!-- ─ STAGE 3 ─────────────────────────────────────────────── -->
+<!-- ── STAGE 3: SIGNALS ───────────────────────────────── -->
 <div id="s3" class="tab">
   <div class="sh3">
-    <div><div class="st3">Intent Signals</div><div class="ss" id="s3sub">0 signals detected</div></div>
+    <div><div class="st3">Intent Signals</div><div class="ss" id="s3sub">Detect buying intent before you reach out</div></div>
     <button class="btn btn-p btn-sm" id="sigBtn" onclick="collectSignals()">⚡ Collect Signals</button>
   </div>
   <div class="card" id="sigBox">
-    <div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Collect signals to detect buying intent</p></div>
+    <div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Signals detect hiring, funding, tech changes and other buying triggers</p></div>
   </div>
 </div>
 
-<!-- ─ STAGE 4 ─────────────────────────────────────────────── -->
+<!-- ── STAGE 4: GENERATE ──────────────────────────────── -->
 <div id="s4" class="tab">
   <div class="sh3">
-    <div><div class="st3">Content Generation</div><div class="ss" id="s4sub">0 drafts</div></div>
+    <div><div class="st3">Email Generation</div><div class="ss" id="s4sub">AI writes personalised emails using signals and ICP pain points</div></div>
     <button class="btn btn-p btn-sm" id="genBtn" onclick="generateEmails()">✨ Generate All</button>
   </div>
-  <div id="draftBox"><div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Generate emails for hot & warm prospects</p></div></div>
+  <div id="genNote" class="mb12"></div>
+  <div id="draftBox"><div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Emails are generated for hot &amp; warm prospects using their signals</p></div></div>
 </div>
 
-<!-- ─ STAGE 5 ─────────────────────────────────────────────── -->
+<!-- ── STAGE 5: SEND ──────────────────────────────────── -->
 <div id="s5" class="tab">
   <div class="sh3">
-    <div><div class="st3">Approval & Send</div><div class="ss" id="s5sub">Review and approve before sending</div></div>
+    <div><div class="st3">Approval &amp; Send</div><div class="ss" id="s5sub">Review every email before it goes out</div></div>
     <button class="btn btn-p btn-sm" id="sndBtn" onclick="sendAll()">📤 Send All Approved</button>
   </div>
-  <div class="g3 mb20" id="emailStatBox" style="display:none">
-    <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="es0">0%</div></div>
-    <div class="kpi"><div class="kl">Reply Rate</div><div class="kv" id="es1">0%</div></div>
+  <div id="sendSourceTag" class="mb12"></div>
+  <div class="g3 mb16" id="emailStatBox" style="display:none">
+    <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="es0">0%</div><div class="ks" id="es0s">—</div></div>
+    <div class="kpi"><div class="kl">Reply Rate</div><div class="kv" id="es1">0%</div><div class="ks" id="es1s">—</div></div>
     <div class="kpi"><div class="kl">Bounce Rate</div><div class="kv" id="es2">0%</div></div>
   </div>
-  <div id="emailProviderTag" class="mb14"></div>
-  <div id="queueBox" class="mb20"></div>
-  <div id="sentBox" style="display:none">
-    <div class="fw7 mb10" style="font-family:'Syne',sans-serif">Sent Emails</div>
+  <div id="queueBox" class="mb16"></div>
+  <div id="sentWrap" style="display:none">
+    <div class="fw7 mb8" style="font-family:'Syne',sans-serif;font-size:13px">Sent Emails</div>
     <div class="tw"><table>
-      <thead><tr><th>Recipient</th><th>Subject</th><th>Provider</th><th>Opened</th><th>Replied</th><th>Bounced</th></tr></thead>
+      <thead><tr><th>Recipient</th><th>Subject</th><th>Via</th><th>Opened</th><th>Replied</th><th>Bounced</th></tr></thead>
       <tbody id="sentTbl"></tbody>
     </table></div>
   </div>
 </div>
 
-<!-- ─ SETTINGS ────────────────────────────────────────────── -->
-<div id="settings" class="tab">
+<!-- ── SETTINGS ───────────────────────────────────────── -->
+<div id="cfg" class="tab">
   <div class="sh3">
-    <div><div class="st3">Integrations & Settings</div><div class="ss">Connect real data sources to replace demo data</div></div>
-    <button class="btn btn-g btn-sm" onclick="saveSettings()">💾 Save All Settings</button>
+    <div><div class="st3">Integrations &amp; Settings</div><div class="ss">Connect real data sources — switch from demo to live with one click</div></div>
+    <button class="btn btn-g btn-sm" onclick="saveSettings()">💾 Save All</button>
   </div>
 
   <!-- How it works -->
-  <div class="card mb20" style="background:rgba(124,92,252,.05);border-color:rgba(124,92,252,.15)">
-    <div class="fw7 mb10" style="font-family:'Syne',sans-serif;font-size:15px">🔧 How integrations work</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">Data Source</b><br/>Apollo, ZoomInfo, Hunter, or Lusha provide real verified prospects and intent signals</div>
-      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">AI Engine</b><br/>Groq (free), Claude, or OpenAI writes personalised emails using real prospect data</div>
-      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">Email Delivery</b><br/>Engage cadences or SendGrid sends and tracks opens, replies, bounces in real time</div>
+  <div class="card mb20" style="background:rgba(124,92,252,.04);border-color:rgba(124,92,252,.14)">
+    <div class="fw7 mb10" style="font-family:'Syne',sans-serif;font-size:13px">How it works — 3 things to connect</div>
+    <div class="g3">
+      <div style="font-size:11px;color:var(--t2)"><div style="font-size:13px;margin-bottom:5px">🤖 <b style="color:var(--v3)">AI Engine</b></div>Writes personalised emails and analyses your ICP. Groq is free — 30 seconds to set up.</div>
+      <div style="font-size:11px;color:var(--t2)"><div style="font-size:13px;margin-bottom:5px">📊 <b style="color:var(--v3)">Prospect Data</b></div>Apollo, ZoomInfo, Hunter or Lusha provide real verified B2B contacts instead of demo data.</div>
+      <div style="font-size:11px;color:var(--t2)"><div style="font-size:13px;margin-bottom:5px">📤 <b style="color:var(--v3)">Email Delivery</b></div>SendGrid or Engage sends real emails and tracks opens, replies, and bounces live.</div>
     </div>
   </div>
 
-  <!-- AI Provider -->
-  <div class="settings-section">
-    <div class="settings-section-title">🤖 AI Provider <span id="ai-status-badge"></span></div>
-    <div class="settings-section-sub">Powers email generation, ICP analysis, and signal detection. Groq is free — get a key in 30 seconds at console.groq.com</div>
-    <div class="g3">
-      <div class="int-card" id="ic-groq">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">⚡</div><div><div class="int-name">Groq</div><div class="int-cat">AI · Free</div></div></div>
-          <div class="int-status demo" id="st-groq">● Not connected</div>
-        </div>
-        <div class="int-desc">Llama 3.3 70B. Fastest AI, completely free. Best for getting started.</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="GROQ_API_KEY" placeholder="gsk_..." autocomplete="off"/></div>
-        </div>
-      </div>
-      <div class="int-card" id="ic-anthropic">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🔮</div><div><div class="int-name">Claude</div><div class="int-cat">AI · Paid</div></div></div>
-          <div class="int-status demo" id="st-anthropic">● Not connected</div>
-        </div>
-        <div class="int-desc">Best email quality. Claude Sonnet 4. console.anthropic.com</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="ANTHROPIC_API_KEY" placeholder="sk-ant-..." autocomplete="off"/></div>
-        </div>
-      </div>
-      <div class="int-card" id="ic-openai">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🧠</div><div><div class="int-name">OpenAI</div><div class="int-cat">AI · Paid</div></div></div>
-          <div class="int-status demo" id="st-openai">● Not connected</div>
-        </div>
-        <div class="int-desc">GPT-4o-mini or GPT-4o. platform.openai.com</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="OPENAI_API_KEY" placeholder="sk-..." autocomplete="off"/></div>
-        </div>
-      </div>
+  <!-- AI -->
+  <div class="sec-title">🤖 AI Provider <span id="ai-st"></span></div>
+  <div class="sec-sub">Groq is completely free — get a key at console.groq.com in 30 seconds. Priority: Groq → Claude → OpenAI.</div>
+  <div class="g3 mb20">
+    <div class="int-card" id="ic-groq">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">⚡</div><div><div class="int-name">Groq</div><div class="int-cat">Llama 3.3 · Free · Fastest</div></div></div><div class="int-status off" id="st-groq">Not connected</div></div>
+      <div class="int-desc">Best for getting started. Completely free, very fast. Get key at console.groq.com</div>
+      <div class="int-field"><label>API Key</label><input id="GROQ_API_KEY" placeholder="gsk_..." autocomplete="off"/></div>
+    </div>
+    <div class="int-card" id="ic-anthropic">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🔮</div><div><div class="int-name">Claude</div><div class="int-cat">claude-sonnet-4 · Best quality</div></div></div><div class="int-status off" id="st-anthropic">Not connected</div></div>
+      <div class="int-desc">Highest quality email writing. console.anthropic.com</div>
+      <div class="int-field"><label>API Key</label><input id="ANTHROPIC_API_KEY" placeholder="sk-ant-..." autocomplete="off"/></div>
+    </div>
+    <div class="int-card" id="ic-openai">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🧠</div><div><div class="int-name">OpenAI</div><div class="int-cat">GPT-4o-mini or GPT-4o</div></div></div><div class="int-status off" id="st-openai">Not connected</div></div>
+      <div class="int-desc">GPT-4o-mini for cost efficiency, GPT-4o for max quality. platform.openai.com</div>
+      <div class="int-field"><label>API Key</label><input id="OPENAI_API_KEY" placeholder="sk-..." autocomplete="off"/></div>
     </div>
   </div>
 
   <div class="sep"></div>
 
   <!-- Data Sources -->
-  <div class="settings-section">
-    <div class="settings-section-title">📊 Prospect Data Source <span id="data-status-badge"></span></div>
-    <div class="settings-section-sub">Connect one of these to get real verified B2B contacts instead of AI demo data. Apollo is the most popular and affordable option.</div>
-    <div class="g2">
-      <div class="int-card" id="ic-apollo">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🚀</div><div><div class="int-name">Apollo.io</div><div class="int-cat">Prospects · 275M contacts · $59/mo</div></div></div>
-          <div class="int-status demo" id="st-apollo">● Not connected</div>
-        </div>
-        <div class="int-desc">Best value. 275M verified contacts, built-in sequencing, firmographic + technographic filters. Most popular choice for outbound SDR teams.</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="APOLLO_API_KEY" placeholder="apollo_api_key_..." autocomplete="off"/></div>
-        </div>
+  <div class="sec-title">📊 Prospect Data <span id="data-st"></span></div>
+  <div class="sec-sub">Connect one source to get real verified B2B contacts. Apollo is the most popular — $59/mo with 275M contacts.</div>
+  <div class="g2 mb20">
+    <div class="int-card" id="ic-apollo">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🚀</div><div><div class="int-name">Apollo.io</div><div class="int-cat">275M contacts · Recommended · $59/mo</div></div></div><div class="int-status off" id="st-apollo">Not connected</div></div>
+      <div class="int-desc">Best value for outbound SDRs. Verified emails, direct dials, firmographics, technographics. Built-in sequencing. Most widely used by outbound teams.</div>
+      <div class="int-field"><label>API Key</label><input id="APOLLO_API_KEY" placeholder="Your Apollo API key" autocomplete="off"/></div>
+    </div>
+    <div class="int-card" id="ic-zoominfo">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🔍</div><div><div class="int-name">ZoomInfo</div><div class="int-cat">Enterprise · Org charts · Intent data</div></div></div><div class="int-status off" id="st-zoominfo">Not connected</div></div>
+      <div class="int-desc">Enterprise-grade. Org charts, buyer intent signals, verified contacts. Best for multi-threaded enterprise accounts and complex buying committees.</div>
+      <div class="flex gap8">
+        <div class="int-field f1"><label>Client ID</label><input id="ZOOMINFO_CLIENT_ID" placeholder="zi_client_id" autocomplete="off"/></div>
+        <div class="int-field f1"><label>Client Secret</label><input id="ZOOMINFO_CLIENT_SECRET" placeholder="zi_secret" type="password" autocomplete="off"/></div>
       </div>
-      <div class="int-card" id="ic-zoominfo">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🔍</div><div><div class="int-name">ZoomInfo</div><div class="int-cat">Prospects + Intent · Enterprise</div></div></div>
-          <div class="int-status demo" id="st-zoominfo">● Not connected</div>
-        </div>
-        <div class="int-desc">Enterprise-grade. Org charts, verified contacts, and proprietary buyer intent signals. Best for multi-threaded enterprise outreach.</div>
-        <div class="int-fields">
-          <div class="int-field"><label>Client ID</label><input id="ZOOMINFO_CLIENT_ID" placeholder="zi_client_id" autocomplete="off"/></div>
-          <div class="int-field"><label>Client Secret</label><input id="ZOOMINFO_CLIENT_SECRET" placeholder="zi_client_secret" type="password" autocomplete="off"/></div>
-        </div>
-      </div>
-      <div class="int-card" id="ic-hunter">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🎯</div><div><div class="int-name">Hunter.io</div><div class="int-cat">Email Finder · Free tier available</div></div></div>
-          <div class="int-status demo" id="st-hunter">● Not connected</div>
-        </div>
-        <div class="int-desc">Find verified email addresses by domain or name. 25 free searches/month. Great for small teams. hunter.io</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="HUNTER_API_KEY" placeholder="hunter_api_key_..." autocomplete="off"/></div>
-        </div>
-      </div>
-      <div class="int-card" id="ic-lusha">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">📋</div><div><div class="int-name">Lusha</div><div class="int-cat">Contacts · Free tier available</div></div></div>
-          <div class="int-status demo" id="st-lusha">● Not connected</div>
-        </div>
-        <div class="int-desc">Fast contact enrichment with direct dials. GDPR compliant. Free plan available. lusha.com</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="LUSHA_API_KEY" placeholder="lusha_api_key_..." autocomplete="off"/></div>
-        </div>
-      </div>
+    </div>
+    <div class="int-card" id="ic-hunter">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🎯</div><div><div class="int-name">Hunter.io</div><div class="int-cat">Email finder · 25 free/month</div></div></div><div class="int-status off" id="st-hunter">Not connected</div></div>
+      <div class="int-desc">Find verified emails by domain or name. 25 free searches/month. Great for small teams or testing. hunter.io</div>
+      <div class="int-field"><label>API Key</label><input id="HUNTER_API_KEY" placeholder="Your Hunter API key" autocomplete="off"/></div>
+    </div>
+    <div class="int-card" id="ic-lusha">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">📋</div><div><div class="int-name">Lusha</div><div class="int-cat">Direct dials · GDPR · Free tier</div></div></div><div class="int-status off" id="st-lusha">Not connected</div></div>
+      <div class="int-desc">Fast enrichment with direct dial phone numbers. GDPR compliant. Good for EU markets. Free plan available at lusha.com</div>
+      <div class="int-field"><label>API Key</label><input id="LUSHA_API_KEY" placeholder="Your Lusha API key" autocomplete="off"/></div>
     </div>
   </div>
 
   <div class="sep"></div>
 
-  <!-- Email Sending -->
-  <div class="settings-section">
-    <div class="settings-section-title">📤 Email Delivery <span id="email-status-badge"></span></div>
-    <div class="settings-section-sub">Connect one of these to send real emails. Without this, sends are simulated with demo open/reply data.</div>
-    <div class="g2">
-      <div class="int-card" id="ic-engage">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">🎪</div><div><div class="int-name">ZoomInfo Engage</div><div class="int-cat">Sending + Sequences + Tracking</div></div></div>
-          <div class="int-status demo" id="st-engage">● Not connected</div>
-        </div>
-        <div class="int-desc">Best for ZoomInfo users. Real multi-step cadences, live open/reply/bounce tracking, auto-follow-ups. Prospects enroll automatically.</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="ENGAGE_API_KEY" placeholder="engage_api_key_..." autocomplete="off"/></div>
-          <div class="int-field"><label>Your Mailbox Email</label><input id="ENGAGE_MAILBOX_EMAIL" placeholder="you@company.com"/></div>
-        </div>
+  <!-- Email Delivery -->
+  <div class="sec-title">📤 Email Delivery <span id="email-st"></span></div>
+  <div class="sec-sub">Without this, sends are simulated. Add SendGrid (100 free/day) for real delivery with open and reply tracking.</div>
+  <div class="g2 mb20">
+    <div class="int-card" id="ic-sendgrid">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">✉️</div><div><div class="int-name">SendGrid</div><div class="int-cat">100 free emails/day · Recommended</div></div></div><div class="int-status off" id="st-sendgrid">Not connected</div></div>
+      <div class="int-desc">Reliable delivery with open &amp; click tracking. Free 100/day. Verify your sending domain for best deliverability. sendgrid.com</div>
+      <div class="int-field mb6"><label>API Key</label><input id="SENDGRID_API_KEY" placeholder="SG.your_key_here" autocomplete="off"/></div>
+      <div class="flex gap8">
+        <div class="int-field f1"><label>From Email</label><input id="SENDGRID_FROM_EMAIL" placeholder="you@company.com"/></div>
+        <div class="int-field f1"><label>From Name</label><input id="SENDGRID_FROM_NAME" placeholder="Your Name"/></div>
       </div>
-      <div class="int-card" id="ic-sendgrid">
-        <div class="int-header">
-          <div class="int-logo"><div class="int-icon">✉️</div><div><div class="int-name">SendGrid</div><div class="int-cat">Email API · 100 free/day</div></div></div>
-          <div class="int-status demo" id="st-sendgrid">● Not connected</div>
-        </div>
-        <div class="int-desc">Reliable email delivery with open & click tracking. 100 emails/day free. Verify your domain for best deliverability. sendgrid.com</div>
-        <div class="int-fields">
-          <div class="int-field"><label>API Key</label><input id="SENDGRID_API_KEY" placeholder="SG...." autocomplete="off"/></div>
-          <div class="int-field"><label>From Email</label><input id="SENDGRID_FROM_EMAIL" placeholder="you@yourcompany.com"/></div>
-          <div class="int-field"><label>From Name</label><input id="SENDGRID_FROM_NAME" placeholder="Your Name"/></div>
-        </div>
-      </div>
+    </div>
+    <div class="int-card" id="ic-engage">
+      <div class="flex aic jb"><div class="flex aic gap8"><div class="int-icon">🎪</div><div><div class="int-name">ZoomInfo Engage</div><div class="int-cat">Cadences · Live tracking</div></div></div><div class="int-status off" id="st-engage">Not connected</div></div>
+      <div class="int-desc">Best for ZoomInfo users. Real multi-step cadences, live open/reply/bounce tracking, auto-follow-ups. Prospects auto-enroll from approvals.</div>
+      <div class="int-field mb6"><label>API Key</label><input id="ENGAGE_API_KEY" placeholder="engage_api_key" autocomplete="off"/></div>
+      <div class="int-field"><label>Your Mailbox</label><input id="ENGAGE_MAILBOX_EMAIL" placeholder="you@company.com"/></div>
     </div>
   </div>
 
   <div class="sep"></div>
-
-  <!-- Security -->
-  <div class="settings-section">
-    <div class="settings-section-title">🔐 Security</div>
-    <div class="settings-section-sub">Admin secret protects the data reset endpoint</div>
-    <div style="max-width:400px">
-      <div class="fld"><label>Admin Secret</label><input id="ADMIN_SECRET" placeholder="your-secret-key" type="password" autocomplete="off"/></div>
-    </div>
+  <div class="sec-title">🔐 Security</div>
+  <div style="max-width:360px;margin-bottom:20px">
+    <div class="int-field"><label>Admin Secret</label><input id="ADMIN_SECRET" placeholder="random-secret-key" type="password" autocomplete="off"/></div>
   </div>
 
-  <div class="flex gap10 flex-wrap">
+  <div class="flex gap10 aic fw">
     <button class="btn btn-p" onclick="saveSettings()">💾 Save All Settings</button>
-    <div style="font-size:12px;color:var(--t3);align-self:center">Settings are saved for this session. Add to Render environment variables for permanent storage.</div>
+    <div class="tss tx">Settings active this session. Add to Render environment variables for permanent storage.</div>
   </div>
 </div>
 
 </main>
 
 <footer class="ft">
-  <span>SDR Autopilot · <b style="color:var(--t1)">Adithya Sharma</b> · RAYR Product Suite</span>
+  <span>SDR Autopilot · <b style="color:var(--t1)">Adithya Sharma</b> · RAYR</span>
   <a href="https://github.com/Rayr-06/sdr-auto-rayr" target="_blank">GitHub ↗</a>
 </footer>
 </div>
@@ -644,175 +619,257 @@ tr:hover td{background:rgba(255,255,255,.015)}
 <div class="tc" id="toasts"></div>
 
 <script>
+'use strict';
 const API='/api';
+
+// ── App state ──────────────────────────────────────────────
 let S={
   stats:{icps:0,prospects:0,signals:0,drafts:0,sentEmails:0},
   ps:{total:0,hot:0,warm:0,cold:0},
   es:{sent:0,opened:0,replied:0,bounced:0,openRate:0,replyRate:0,bounceRate:0},
   icps:[],prospects:[],signals:[],drafts:[],queue:[],sent:[],
-  config:{aiProvider:'demo',dataSource:'demo',emailProvider:'demo',status:{}},
-  cur:null
+  cfg:{aiProvider:'demo',dataSource:'demo',emailProvider:'demo',status:{}},
+  cur:null, booted:false
 };
 
-// ─ Utils ──────────────────────────────────────────────────
+// ── Utils ──────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
-const h=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const h=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-function toast(msg,type='ok'){
+function toast(msg,type='ok',dur=4200){
   const el=document.createElement('div');
-  el.className=`tos ${type==='ok'?'tok':'ter'}`;
-  el.innerHTML=`<span>${type==='ok'?'✓':'✗'}</span><span>${msg}</span>`;
+  el.className=`tos ${type==='ok'?'tok':type==='info'?'tinf':'ter'}`;
+  const icon=type==='ok'?'✓':type==='info'?'ℹ':'✗';
+  el.innerHTML=`<span>${icon}</span><span style="flex:1">${msg}</span>`;
   $('toasts').appendChild(el);
-  setTimeout(()=>el.remove(),4500);
+  setTimeout(()=>el.remove(),dur);
 }
 
+const btnState={};
 function setBtn(id,loading,label){
   const b=$(id);if(!b)return;
-  b.disabled=loading;
-  if(loading){b._t=b.innerHTML;b.innerHTML=`<span class="spin"></span> ${label}…`}
-  else if(b._t){b.innerHTML=b._t}
+  if(loading){
+    if(!btnState[id])btnState[id]=b.innerHTML;
+    b.disabled=true;
+    b.innerHTML=`<span class="spin"></span> ${label||'Loading'}…`;
+  }else{
+    b.disabled=false;
+    if(btnState[id]){b.innerHTML=btnState[id];delete btnState[id];}
+  }
 }
 
 function scoreBar(v){
-  const p=Math.round(v);
-  return`<div class="sb"><div class="st2"><div class="sf2" style="width:${p}%"></div></div><span class="sn2">${p}</span></div>`;
+  const p=Math.min(100,Math.round(v||0));
+  const col=p>=80?'#34d399':p>=60?'#fbbf24':'#7070a0';
+  return`<div class="sb"><div class="st2"><div class="sf2" style="width:${p}%;background:${col}"></div></div><span class="sn2">${p}</span></div>`;
+}
+
+function spamIndicator(s){
+  const v=parseFloat(s||0);
+  if(v<=3)return`<span class="spam-g">✓ ${v.toFixed(1)}</span>`;
+  if(v<=5)return`<span class="spam-y">⚠ ${v.toFixed(1)}</span>`;
+  return`<span class="spam-r">✗ ${v.toFixed(1)}</span>`;
 }
 
 function ini(n){return(n||'?').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase()||'??'}
-function sbadge(s){const m={hot:'bh',warm:'bw',cold:'bc',pending:'bp',approved:'ba',sent:'bs',contacted:'bs'};return`<span class="badge ${m[s]||'bc'}">${h(s[0].toUpperCase()+s.slice(1))}</span>`}
-function sigbadge(t){const m={funding:'sf',hiring:'sh',news:'sn',tech_change:'st',intent:'sp',expansion:'se',leadership:'sl',partnership:'sp'};return`<span class="bsig ${m[t]||'sn'}">${h(t.replace('_',' '))}</span>`}
+function sbadge(s){
+  const m={hot:'bh',warm:'bw',cold:'bc',pending:'bp',approved:'ba',sent:'bbs',contacted:'bbs',skipped:'bc'};
+  return`<span class="badge ${m[s]||'bc'}">${h((s||'')[0]?.toUpperCase()+(s||'').slice(1))}</span>`;
+}
+function sigbadge(t){
+  const m={funding:'sf',hiring:'sh',news:'sn',tech_change:'st',intent:'sp',expansion:'se',leadership:'sl',partnership:'sp'};
+  return`<span class="bsig ${m[t]||'sn'}">${h((t||'').replace('_',' '))}</span>`;
+}
 function sigicon(t){return{funding:'💰',hiring:'📋',news:'📰',tech_change:'🔧',expansion:'🌍',leadership:'👔',partnership:'🤝',intent:'📡'}[t]||'📡'}
 
 async function req(url,opts={}){
   const r=await fetch(API+url,{headers:{'Content-Type':'application/json'},...opts});
-  if(!r.ok){const e=await r.json().catch(()=>({error:'Request failed'}));throw new Error(e.error||`HTTP ${r.status}`)}
+  if(!r.ok){const e=await r.json().catch(()=>({error:'Request failed'}));throw new Error(e.error||`HTTP ${r.status}`);}
   return r.json();
 }
 
-// ─ Navigation ─────────────────────────────────────────────
+// ── Navigation ─────────────────────────────────────────────
 function go(id,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
-  $(id)?.classList.add('on');
+  const tab=$(id);if(tab)tab.classList.add('on');
   if(btn)btn.classList.add('on');
-  else{const b=[...document.querySelectorAll('.nb')].find(x=>x.getAttribute('onclick')?.includes(`'${id}'`));if(b)b.classList.add('on')}
+  else{
+    const b=[...document.querySelectorAll('.nb')].find(x=>x.getAttribute('onclick')===`go('${id}',this)`);
+    if(b)b.classList.add('on');
+  }
+  // Load settings values when going to settings tab
+  if(id==='cfg')loadSettingsMasked();
 }
 
-// ─ Mode banner ────────────────────────────────────────────
+// ── Mode banner ────────────────────────────────────────────
 function updateModeBanner(){
-  const c=S.config;
-  const hasData=c.dataSource!=='demo';
-  const hasEmail=c.emailProvider!=='demo';
-  const hasAI=c.aiProvider!=='demo';
-  const banner=$('modeBanner');
-  const label=$('modeLabel');
+  const c=S.cfg;
+  const st=c.status||{};
+  const hasAI=!!(st.groq||st.anthropic||st.openai);
+  const hasData=!!(st.apollo||st.zoominfo||st.hunter||st.lusha);
+  const hasEmail=!!(st.sendgrid||st.engage);
+  const banner=$('modeBanner'),label=$('modeLabel');
   const demoAlert=$('demoAlert');
 
-  if(hasData && hasEmail && hasAI){
-    banner.className='mode-banner live';
-    label.textContent='🟢 Live Mode';
+  if(hasAI&&hasData&&hasEmail){
+    banner.className='mb live';label.textContent='🟢 Live Mode';
     if(demoAlert)demoAlert.style.display='none';
-  } else if(hasData || hasEmail || hasAI){
-    banner.className='mode-banner live';
+  } else if(hasAI||hasData||hasEmail){
+    banner.className='mb partial';
     const parts=[];
-    if(hasAI) parts.push(c.aiProvider);
-    if(hasData) parts.push(c.dataSource);
-    if(hasEmail) parts.push(c.emailProvider);
-    label.textContent=`🟡 Partial: ${parts.join(', ')}`;
+    if(hasAI)parts.push(c.aiProvider||'AI');
+    if(hasData)parts.push(c.dataSource||'Data');
+    if(hasEmail)parts.push(c.emailProvider||'Email');
+    label.textContent=`🟡 Partial (${parts.join(', ')})`;
     if(demoAlert)demoAlert.style.display='flex';
   } else {
-    banner.className='mode-banner demo';
-    label.textContent='⚠ Demo Mode';
+    banner.className='mb demo';label.textContent='⚠ Demo Mode';
     if(demoAlert)demoAlert.style.display='flex';
   }
 }
 
 function updateIntegrationStatuses(){
-  const st=S.config.status||{};
-  const labels={
-    groq:['st-groq','ic-groq'],anthropic:['st-anthropic','ic-anthropic'],openai:['st-openai','ic-openai'],
-    apollo:['st-apollo','ic-apollo'],zoominfo:['st-zoominfo','ic-zoominfo'],
-    hunter:['st-hunter','ic-hunter'],lusha:['st-lusha','ic-lusha'],
-    engage:['st-engage','ic-engage'],sendgrid:['st-sendgrid','ic-sendgrid'],
-  };
+  const st=S.cfg.status||{};
+  const map={groq:'st-groq',anthropic:'st-anthropic',openai:'st-openai',
+    apollo:'st-apollo',zoominfo:'st-zoominfo',hunter:'st-hunter',lusha:'st-lusha',
+    sendgrid:'st-sendgrid',engage:'st-engage'};
+  const cardMap={groq:'ic-groq',anthropic:'ic-anthropic',openai:'ic-openai',
+    apollo:'ic-apollo',zoominfo:'ic-zoominfo',hunter:'ic-hunter',lusha:'ic-lusha',
+    sendgrid:'ic-sendgrid',engage:'ic-engage'};
 
-  for(const[key,[stId,cardId]] of Object.entries(labels)){
-    const connected=st[key];
-    const stEl=$(stId),cardEl=$(cardId);
-    if(stEl){stEl.className=`int-status ${connected?'live':'demo'}`;stEl.textContent=connected?'● Connected':'● Not connected';}
-    if(cardEl){cardEl.classList.toggle('connected',!!connected);}
+  for(const[key,stId] of Object.entries(map)){
+    const el=$(stId);
+    if(!el)continue;
+    if(st[key]){el.className='int-status live';el.textContent='✓ Connected';}
+    else{el.className='int-status off';el.textContent='Not connected';}
+    const card=$(cardMap[key]);
+    if(card)card.classList.toggle('connected',!!st[key]);
   }
 
-  // Section badges
-  const aiOk=st.groq||st.anthropic||st.openai;
-  const dataOk=st.apollo||st.zoominfo||st.hunter||st.lusha;
-  const emailOk=st.engage||st.sendgrid;
-
-  const mkBadge=(ok,label)=>ok?`<span class="badge ba">✓ ${label}</span>`:`<span class="badge bw">Demo</span>`;
-  if($('ai-status-badge'))$('ai-status-badge').innerHTML=mkBadge(aiOk,S.config.aiProvider||'AI');
-  if($('data-status-badge'))$('data-status-badge').innerHTML=mkBadge(dataOk,S.config.dataSource||'Data');
-  if($('email-status-badge'))$('email-status-badge').innerHTML=mkBadge(emailOk,S.config.emailProvider||'Email');
+  const aiOk=!!(st.groq||st.anthropic||st.openai);
+  const dataOk=!!(st.apollo||st.zoominfo||st.hunter||st.lusha);
+  const emailOk=!!(st.sendgrid||st.engage);
+  const mk=(ok,label)=>ok?`<span class="badge ba" style="font-size:10px;margin-left:6px">✓ ${label}</span>`:`<span class="badge bp" style="font-size:10px;margin-left:6px">Demo</span>`;
+  if($('ai-st'))$('ai-st').innerHTML=mk(aiOk,S.cfg.aiProvider||'AI');
+  if($('data-st'))$('data-st').innerHTML=mk(dataOk,S.cfg.dataSource||'Data');
+  if($('email-st'))$('email-st').innerHTML=mk(emailOk,S.cfg.emailProvider||'Email');
 }
 
 function sourceTag(source,label){
-  const isDemo=!source||source==='demo'||source.includes('demo');
-  if(isDemo) return`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--demo-bg);border:1px solid var(--demo-border);border-radius:99px;font-size:11px;font-weight:700;color:var(--demo-text)">⚠ ${label}: Demo Data — <span style="font-weight:400">Connect ${label.split(' ')[0]} in Settings for real data</span></div>`;
-  return`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--live-bg);border:1px solid var(--live-border);border-radius:99px;font-size:11px;font-weight:700;color:var(--live-text)">✓ ${label}: ${h(source)} — Real Data</div>`;
+  const isDemo=!source||source==='demo'||source.includes('demo')||source.includes('ai');
+  if(isDemo)return`<div class="stag demo">⚠ ${label}: Demo Data — <span style="font-weight:400;margin-left:4px"><a onclick="go('cfg')" style="color:#fbbf24;text-decoration:underline;cursor:pointer">Connect a real source →</a></span></div>`;
+  return`<div class="stag live">✓ ${label}: ${h(source)} — Real verified data</div>`;
 }
 
-// ─ Refresh ────────────────────────────────────────────────
+// ── Next step guidance ─────────────────────────────────────
+function updateNextStep(){
+  const s=S.stats,ns=$('nextStepBox'),nc=$('nextStepContent');
+  if(!ns||!nc)return;
+  if(s.icps===0){ns.style.display='none';return;}
+  ns.style.display='block';
+  let msg='',btn='';
+  if(s.signals===0){
+    msg='You have prospects. Now collect intent signals to know which ones are actively buying.';
+    btn=`<button class="btn btn-p btn-sm" onclick="go('s3')">→ Collect Signals</button>`;
+  } else if(s.drafts===0){
+    msg='Signals collected! Now generate personalised emails for your hot & warm prospects.';
+    btn=`<button class="btn btn-p btn-sm" onclick="go('s4')">→ Generate Emails</button>`;
+  } else {
+    const pending=S.queue.filter(d=>d.status==='pending').length;
+    const approved=S.queue.filter(d=>d.status==='approved').length;
+    if(pending>0){
+      msg=`${pending} email${pending>1?'s':''} waiting for your review and approval.`;
+      btn=`<button class="btn btn-p btn-sm" onclick="go('s5')">→ Review & Approve (${pending})</button>`;
+    } else if(approved>0){
+      msg=`${approved} email${approved>1?'s':''} approved and ready to send.`;
+      btn=`<button class="btn btn-p btn-sm" onclick="go('s5')">→ Send Approved (${approved})</button>`;
+    } else {
+      msg='All emails sent! Check your open and reply rates in the Send tab.';
+      btn=`<button class="btn btn-s btn-sm" onclick="go('s5')">→ View Results</button>`;
+    }
+  }
+  nc.innerHTML=`<div class="card card-sm" style="background:rgba(124,92,252,.04);border-color:rgba(124,92,252,.14)"><div class="flex aic jb gap12 fw"><div class="ts tm" style="flex:1">${msg}</div>${btn}</div></div>`;
+}
+
+// ── Refresh ────────────────────────────────────────────────
 async function refreshAll(){
   try{
     const [he,ic,pr,st,si,qu,se,cf]=await Promise.allSettled([
-      req('/health'),req('/stage1/icps'),req('/stage2/prospects?perPage=200'),
-      req('/stage2/stats'),req('/stage3/signals?perPage=200'),
-      req('/stage5/queue?perPage=200&includeAll=true'),req('/stage5/sent?perPage=200'),
+      req('/health'),
+      req('/stage1/icps'),
+      req('/stage2/prospects?perPage=200'),
+      req('/stage2/stats'),
+      req('/stage3/signals?perPage=200'),
+      req('/stage5/queue?perPage=200&includeAll=true'),
+      req('/stage5/sent?perPage=200'),
       fetch(API+'/config').then(r=>r.json()).catch(()=>null)
     ]);
-    if(he.status==='fulfilled')S.stats=he.value.counts;
-    if(ic.status==='fulfilled')S.icps=ic.value.icps;
-    if(pr.status==='fulfilled')S.prospects=pr.value.prospects;
-    if(st.status==='fulfilled')S.ps=st.value;
-    if(si.status==='fulfilled')S.signals=si.value.signals;
-    if(qu.status==='fulfilled'){S.queue=qu.value.drafts;S.drafts=qu.value.drafts}
-    if(se.status==='fulfilled'){S.sent=se.value.emails;S.es=se.value.stats}
-    if(cf.status==='fulfilled'&&cf.value)S.config=cf.value;
+    if(he.status==='fulfilled')S.stats=he.value.counts||S.stats;
+    if(ic.status==='fulfilled')S.icps=ic.value.icps||[];
+    if(pr.status==='fulfilled')S.prospects=pr.value.prospects||[];
+    if(st.status==='fulfilled')S.ps=st.value||S.ps;
+    if(si.status==='fulfilled')S.signals=si.value.signals||[];
+    if(qu.status==='fulfilled'){S.queue=qu.value.drafts||[];S.drafts=qu.value.drafts||[];}
+    if(se.status==='fulfilled'){S.sent=se.value.emails||[];S.es=se.value.stats||S.es;}
+    if(cf.status==='fulfilled'&&cf.value)S.cfg={...S.cfg,...cf.value};
+    S.booted=true;
     renderAll();
-  }catch(e){console.error(e)}
+  }catch(e){console.error('Refresh failed:',e);}
 }
 
 function renderAll(){
   rStats();rICPs();renderProspects();rSignals();rDrafts();rQueue();rSent();
-  updateModeBanner();updateIntegrationStatuses();
+  updateModeBanner();updateIntegrationStatuses();updateNextStep();
+  rSourceTags();
+}
+
+function rSourceTags(){
+  const ds=S.cfg.dataSource,ep=S.cfg.emailProvider;
+  if($('resSourceTag'))$('resSourceTag').innerHTML=sourceTag(ds,'Prospect Data');
+  if($('prosSourceTag'))$('prosSourceTag').innerHTML=sourceTag(ds,'Prospect Data');
+  if($('sendSourceTag'))$('sendSourceTag').innerHTML=sourceTag(ep,'Email Delivery');
+  // Generate note
+  const need=S.prospects.filter(p=>(p.status==='hot'||p.status==='warm')&&(p.draftCount||0)===0).length;
+  const genNote=$('genNote');
+  if(genNote){
+    if(need>0)genNote.innerHTML=`<div class="tss tm">🎯 ${need} hot/warm prospect${need>1?'s have':' has'} no email yet. Click Generate All to create personalised drafts.</div>`;
+    else if(S.drafts.length>0)genNote.innerHTML=`<div class="tss" style="color:#34d399">✓ All hot/warm prospects have emails. Review them in the Send tab.</div>`;
+    else genNote.innerHTML='';
+  }
 }
 
 function rStats(){
   const s=S.stats,ps=S.ps,es=S.es;
-  $('pf0').textContent=s.icps;$('pf1').textContent=s.prospects;
-  $('pf2').textContent=s.signals;$('pf3').textContent=s.drafts;$('pf4').textContent=s.sentEmails;
+  // Animate numbers
+  ['pf0','pf1','pf2','pf3','pf4'].forEach((id,i)=>{
+    const vals=[s.icps,s.prospects,s.signals,s.drafts,s.sentEmails];
+    const el=$(id);if(el&&el.textContent!==String(vals[i])){el.textContent=vals[i];el.style.transform='scale(1.15)';setTimeout(()=>el.style.transform='',200);}
+  });
   $('k0').textContent=s.icps;$('k1').textContent=s.prospects;
   $('k1s').textContent=`${ps.hot||0} hot · ${ps.warm||0} warm`;
   $('k2').textContent=s.signals;$('k3').textContent=s.drafts;$('k4').textContent=s.sentEmails;
   $('k5').textContent=(es.openRate||0)+'%';$('k5s').textContent=(es.replyRate||0)+'% reply';
-  if(s.icps>0){$('heroBox').style.display='none'}else{$('heroBox').style.display=''}
-  const pending=S.queue.filter(d=>d.status==='pending').length;
-  const pc=$('pendingCount');
-  if(pc){pc.textContent=pending;pc.style.display=pending>0?'':'none'}
-  // Source tags
-  if($('dataSourceBadge'))$('dataSourceBadge').innerHTML=sourceTag(S.config.dataSource,'Prospect Data');
-  if($('prospectSourceTag'))$('prospectSourceTag').innerHTML=sourceTag(S.config.dataSource,'Prospect Data');
-  if($('emailProviderTag'))$('emailProviderTag').innerHTML=sourceTag(S.config.emailProvider,'Email Delivery');
+
+  // Show/hide hero
+  if(s.icps>0)$('heroBox').style.display='none';
+  else $('heroBox').style.display='';
+
+  // Pending badge on Send nav
+  const pending=(S.queue||[]).filter(d=>d.status==='pending').length;
+  const pb=$('pendingBadge');
+  if(pb){pb.textContent=pending;pb.style.display=pending>0?'':'none';}
 }
 
 function rICPs(){
-  const el=$('icpBox');
-  if(!S.icps.length){el.innerHTML='<div class="fw7 mb14" style="font-family:\'Syne\',sans-serif">Created ICPs</div><div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Run research to create your first ICP</p></div>';return}
-  el.innerHTML=`<div class="fw7 mb14" style="font-family:'Syne',sans-serif">Created ICPs (${S.icps.length})</div>`+S.icps.map(icp=>{
+  const el=$('icpBox');if(!el)return;
+  if(!S.icps.length){el.innerHTML='<div class="fw7 mb12" style="font-family:\'Syne\',sans-serif;font-size:14px">Created ICPs</div><div class="emp"><div class="ei">🎯</div><h3>No ICPs yet</h3><p>Fill the form and click Run Research</p></div>';return;}
+  el.innerHTML=`<div class="fw7 mb12" style="font-family:'Syne',sans-serif;font-size:14px">Created ICPs (${S.icps.length})</div>`+S.icps.map(icp=>{
     const c=icp.config||{};
-    return`<div class="card card-sm mb10" style="border-color:rgba(124,92,252,.2)">
-      <div class="flex aic jb mb6"><span class="fw6 ts">${h(icp.name)}</span><span class="badge ba">v${icp.version}</span></div>
-      ${c.summary?`<div class="ts tx mb6">${h(String(c.summary))}</div>`:''}
-      ${c.painPoints?.length?`<div class="flex fw gap6">${c.painPoints.slice(0,4).map(p=>`<span class="badge" style="background:rgba(248,113,113,.08);color:var(--r);border-color:rgba(248,113,113,.18)">${h(String(p))}</span>`).join('')}</div>`:''}
+    return`<div class="card card-sm mb8" style="border-color:rgba(124,92,252,.18)">
+      <div class="flex aic jb mb6"><span class="fw6 ts trunc">${h(icp.name)}</span><span class="badge ba tss">v${icp.version} · ${icp.prospectCount||0} prospects</span></div>
+      ${c.summary?`<div class="tss tm mb6" style="line-height:1.5">${h(String(c.summary))}</div>`:''}
+      ${Array.isArray(c.painPoints)&&c.painPoints.length?`<div class="flex fw gap4">${c.painPoints.slice(0,4).map(p=>`<span class="badge" style="background:rgba(248,113,113,.08);color:#f87171;border-color:rgba(248,113,113,.15);font-size:9px">${h(String(p))}</span>`).join('')}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -820,267 +877,350 @@ function rICPs(){
 function renderProspects(){
   const f=$('pfilter').value,list=f==='all'?S.prospects:S.prospects.filter(p=>p.status===f);
   const ps=S.ps;
-  $('p2sub').textContent=`${ps.total||0} total · ${ps.hot||0} hot · ${ps.warm||0} warm · ${ps.cold||0} cold`;
-  $('ptbl').innerHTML=!list.length?`<tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>${S.prospects.length?'No matches':'No prospects yet'}</h3><p>${S.prospects.length?'Change filter':'Run Research first'}</p></div></td></tr>`:
+  const sub=$('p2sub');if(sub)sub.textContent=`${ps.total||0} total · ${ps.hot||0} hot · ${ps.warm||0} warm · ${ps.cold||0} cold`;
+  const isDemo=!S.cfg.status?.apollo&&!S.cfg.status?.zoominfo&&!S.cfg.status?.hunter&&!S.cfg.status?.lusha;
+  $('ptbl').innerHTML=!list.length?`<tr><td colspan="6"><div class="emp"><div class="ei">👥</div><h3>${S.prospects.length?'No matches':'No prospects yet'}</h3><p>${S.prospects.length?'Try changing the filter':'Run Research in Stage 1 first'}</p></div></td></tr>`:
     list.map(p=>`<tr>
       <td><div class="flex aic gap8"><div class="av">${ini(p.contact?.full_name)}</div><div><div class="fw6 ts">${h(p.contact?.full_name||'')}</div><div class="tss tx">${h(p.contact?.title||'')}</div></div></div></td>
-      <td><div class="fw6 ts">${h(p.company?.name||'')}</div><div class="tss tx">${h(p.company?.industry||'')}</div></td>
-      <td>${scoreBar(p.icpScore||0)}</td><td>${scoreBar(p.intentScore||0)}</td>
+      <td><div class="fw6 ts">${h(p.company?.name||'')}</div><div class="tss tx">${h(p.company?.industry||'')} · ${h(p.company?.size||'')}</div></td>
+      <td>${scoreBar(p.icpScore)}</td>
+      <td>${scoreBar(p.intentScore)}</td>
       <td>${sbadge(p.status)}</td>
+      <td>${isDemo?'<span class="badge-demo">Demo</span>':'<span class="badge-real">✓ Real</span>'}</td>
     </tr>`).join('');
 }
 
 function rSignals(){
-  const s=S.signals;
-  $('s3sub').textContent=`${s.length} signals detected`;
-  if(!s.length){$('sigBox').innerHTML='<div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Collect signals to detect buying intent</p></div>';return}
-  $('sigBox').innerHTML=s.map(sg=>`<div class="sgi">
-    <div class="sgic" style="background:rgba(251,191,36,.08)">${sigicon(sg.signalType)}</div>
-    <div class="f1 mn0">
-      <div class="flex aic gap6 mb6 fw">${sigbadge(sg.signalType)}<span class="tss tx">via ${h(sg.source)}</span>${sg.source==='zoominfo'||sg.source==='zoominfo+ai'?'<span class="badge ba tss">✓ Real</span>':''}</div>
-      <div class="fw6 ts">${h(sg.humanSummary)}</div>
-      <div class="tss tx" style="margin-top:3px">${h(sg.prospect?.contact?.full_name||'')} · ${h(sg.prospect?.company?.name||'')}</div>
-    </div>
-    <div style="text-align:right;flex-shrink:0"><div class="fw7 ts" style="color:var(--a)">${Math.round((sg.weight||0)*100)}</div><div class="tss tx">${new Date(sg.detectedAt).toLocaleDateString()}</div></div>
-  </div>`).join('');
+  const s=S.signals,sub=$('s3sub');
+  if(sub)sub.textContent=`${s.length} signals detected across ${new Set(s.map(x=>x.prospectId)).size} prospects`;
+  const box=$('sigBox');if(!box)return;
+  if(!s.length){box.innerHTML='<div class="emp"><div class="ei">⚡</div><h3>No signals yet</h3><p>Signals detect hiring, funding, tech changes — buying triggers</p></div>';return;}
+  box.innerHTML=s.map(sg=>{
+    const isReal=sg.source&&(sg.source.includes('zoominfo')||sg.source.includes('apollo'));
+    return`<div class="sgi">
+      <div class="sgic" style="background:rgba(251,191,36,.07)">${sigicon(sg.signalType)}</div>
+      <div class="f1 mn0">
+        <div class="flex aic gap6 mb4 fw">${sigbadge(sg.signalType)}<span class="tx2 tx">via ${h(sg.source)}</span>${isReal?'<span class="badge-real">✓ Real</span>':''}</div>
+        <div class="fw6 ts">${h(sg.humanSummary)}</div>
+        <div class="tss tx" style="margin-top:3px">${h(sg.prospect?.contact?.full_name||'')} · <b>${h(sg.prospect?.company?.name||'')}</b></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;padding-left:8px">
+        <div class="fw7 ts" style="color:#fbbf24">${Math.round((sg.weight||0)*100)}</div>
+        <div class="tx2 tx">${new Date(sg.detectedAt).toLocaleDateString()}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function rDrafts(){
-  $('s4sub').textContent=`${S.drafts.length} drafts`;
-  if(!S.drafts.length){$('draftBox').innerHTML='<div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Generate emails for hot & warm prospects</p></div>';return}
-  $('draftBox').innerHTML=S.drafts.map(d=>`<div class="di" onclick="previewDraft('${d.id}')">
-    <div class="av">${ini(d.prospect?.contact?.full_name)}</div>
-    <div class="f1 mn0">
-      <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">· ${h(d.prospect?.company?.name||'')}</span></div>
-      <div class="fw6 ts trunc mb6">${h(d.editedSubject||d.subjectLines?.[0]||'No subject')}</div>
-      <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,110))}…</div>
-      <div class="dm"><span>📝 ${d.wordCount||0}w</span><span>🚫 spam ${(d.spamScore||0).toFixed(1)}</span><span>📖 G${(d.readabilityGrade||0).toFixed(1)}</span></div>
-    </div>
-    <div style="color:var(--t3);font-size:16px">›</div>
-  </div>`).join('');
+  const sub=$('s4sub');if(sub)sub.textContent=`${S.drafts.length} drafts — click any to preview`;
+  const box=$('draftBox');if(!box)return;
+  if(!S.drafts.length){box.innerHTML='<div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>AI writes personalised emails for hot &amp; warm prospects using their signals</p></div>';return;}
+  box.innerHTML=S.drafts.map(d=>{
+    const spam=parseFloat(d.spamScore||0);
+    const spamClass=spam<=3?'spam-g':spam<=5?'spam-y':'spam-r';
+    const preview=(d.editedBody||d.body||'').split('\n').filter(Boolean).slice(1,3).join(' ').substring(0,100);
+    return`<div class="di" onclick="previewDraft('${d.id}')">
+      <div class="av" style="flex-shrink:0">${ini(d.prospect?.contact?.full_name)}</div>
+      <div class="f1 mn0">
+        <div class="flex aic gap6 mb4 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">· ${h(d.prospect?.company?.name||'')}</span></div>
+        <div class="fw6 ts trunc mb4">${h(d.editedSubject||d.subjectLines?.[0]||'No subject')}</div>
+        <div class="tss tx" style="line-height:1.4">${h(preview)}…</div>
+        <div class="dm">
+          <span>${d.wordCount||0}w</span>
+          <span>Spam: <span class="${spamClass}">${spam.toFixed(1)}</span></span>
+          <span>Grade G${(d.readabilityGrade||0).toFixed(1)}</span>
+          ${d.prospect?.topSignals?.length?`<span>📡 ${d.prospect.topSignals.length} signal${d.prospect.topSignals.length>1?'s':''}</span>`:''}
+        </div>
+      </div>
+      <div class="tx" style="font-size:14px;flex-shrink:0">›</div>
+    </div>`;
+  }).join('');
 }
 
 function rQueue(){
-  const pending=S.queue.filter(d=>d.status==='pending'),approved=S.queue.filter(d=>d.status==='approved');
-  $('s5sub').textContent=`${pending.length} pending review · ${approved.length} approved ready`;
-  if(!S.queue.length){$('queueBox').innerHTML='<div class="emp"><div class="ei">📬</div><h3>No emails in queue</h3><p>Generate and approve emails in Stage 4</p></div>';return}
-  $('queueBox').innerHTML=`<div class="flex aic jb mb10">
-    <div class="fw7" style="font-family:'Syne',sans-serif">Approval Queue</div>
-    <div class="flex gap6">${pending.length?`<span class="badge bp">${pending.length} pending</span>`:''} ${approved.length?`<span class="badge ba">${approved.length} approved</span>`:''}</div>
-  </div>`+S.queue.map(d=>`<div class="di" style="margin-bottom:7px">
-    <div class="av" style="background:linear-gradient(135deg,var(--r),#f43f5e)">${ini(d.prospect?.contact?.full_name)}</div>
-    <div class="f1 mn0">
-      <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">${h(d.prospect?.contact?.title||'')} · ${h(d.prospect?.company?.name||'')}</span></div>
-      <div class="tss tx mb6">ICP <b>${Math.round(d.prospect?.icpScore||0)}</b> · Intent <b>${Math.round(d.prospect?.intentScore||0)}</b> · Spam <b>${(d.spamScore||0).toFixed(1)}</b> · ${d.wordCount||0}w</div>
-      <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,140))}…</div>
-    </div>
-    ${d.status==='pending'?`<div class="abs">
-      <button class="ab ap" onclick="approve('${d.id}','approve',event)" title="Approve ✓">✓</button>
-      <button class="ab ed" onclick="editDraftOpen('${d.id}',event)" title="Edit & Approve ✎">✎</button>
-      <button class="ab sk" onclick="approve('${d.id}','skip',event)" title="Skip ⊘">⊘</button>
-    </div>`:''}
-  </div>`).join('');
+  const pending=S.queue.filter(d=>d.status==='pending');
+  const approved=S.queue.filter(d=>d.status==='approved');
+  const sub=$('s5sub');
+  if(sub)sub.textContent=`${pending.length} need review · ${approved.length} approved and ready to send`;
+  const box=$('queueBox');if(!box)return;
+  if(!S.queue.length){box.innerHTML='<div class="emp"><div class="ei">📬</div><h3>No emails in queue</h3><p>Generate emails in Stage 4 then come back here to approve them</p></div>';return;}
+
+  // Only show pending first, then approved — skip sent/skipped in this view
+  const toShow=[...pending,...approved];
+  if(!toShow.length){box.innerHTML='<div class="card card-sm" style="text-align:center;color:var(--t2);font-size:13px">All emails reviewed — check Sent Emails below ↓</div>';return;}
+
+  box.innerHTML=`<div class="flex aic jb mb10">
+    <div class="fw7" style="font-family:'Syne',sans-serif;font-size:13px">Approval Queue</div>
+    <div class="flex gap6">${pending.length?`<span class="badge bp">${pending.length} to review</span>`:''}${approved.length?`<span class="badge ba">${approved.length} approved</span>`:''}</div>
+  </div>`+toShow.map(d=>{
+    const preview=(d.editedBody||d.body||'').split('\n').filter(Boolean).slice(1,2).join('').substring(0,120);
+    const isPending=d.status==='pending';
+    return`<div class="qi ${d.status}">
+      <div class="av" style="flex-shrink:0;background:${isPending?'linear-gradient(135deg,#f87171,#f43f5e)':'linear-gradient(135deg,#34d399,#059669)'}">${ini(d.prospect?.contact?.full_name)}</div>
+      <div class="f1 mn0">
+        <div class="flex aic gap6 mb4 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">${h(d.prospect?.contact?.title||'')} · ${h(d.prospect?.company?.name||'')}</span></div>
+        <div class="ts trunc fw6 mb4">${h(d.editedSubject||d.subjectLines?.[0]||'')}</div>
+        <div class="flex gap8 tss tx mb4">
+          <span>ICP <b>${Math.round(d.prospect?.icpScore||0)}</b></span>
+          <span>Intent <b>${Math.round(d.prospect?.intentScore||0)}</b></span>
+          <span>Spam ${spamIndicator(d.spamScore)}</span>
+          <span>${d.wordCount||0}w</span>
+        </div>
+        ${preview?`<div class="qi-preview tss">${h(preview)}…</div>`:''}
+      </div>
+      ${isPending?`<div class="abs">
+        <button class="ab ap" onclick="approve('${d.id}','approve',event)" title="Approve — queue for sending">✓</button>
+        <button class="ab ed" onclick="editOpen('${d.id}',event)" title="Edit before approving">✎</button>
+        <button class="ab sk" onclick="approve('${d.id}','skip',event)" title="Skip this prospect">⊘</button>
+      </div>`:'<div style="font-size:11px;color:#34d399;margin-top:2px;flex-shrink:0">✓ Approved</div>'}
+    </div>`;
+  }).join('');
 }
 
 function rSent(){
   const es=S.es;
-  if(es.sent>0){
+  if((es.sent||0)>0){
     $('emailStatBox').style.display='grid';
-    $('es0').textContent=(es.openRate||0)+'%';$('es1').textContent=(es.replyRate||0)+'%';$('es2').textContent=(es.bounceRate||0)+'%';
-    $('sentBox').style.display='';
+    $('es0').textContent=(es.openRate||0)+'%';
+    $('es0s').textContent=`${es.opened||0} of ${es.sent||0} opened`;
+    $('es1').textContent=(es.replyRate||0)+'%';
+    $('es1s').textContent=`${es.replied||0} replied`;
+    $('es2').textContent=(es.bounceRate||0)+'%';
+    $('sentWrap').style.display='';
     $('sentTbl').innerHTML=S.sent.map(e=>`<tr>
       <td><div class="fw6 ts">${h(e.prospect?.contact?.full_name||'')}</div><div class="tss tx">${h(e.recipientEmail)}</div></td>
       <td class="trunc" style="max-width:160px"><span class="ts tx">${h(e.subject)}</span></td>
-      <td><span class="badge bc">${h(e.sendProvider)}</span></td>
-      <td style="text-align:center">${e.openedAt?'<span style="color:var(--g)">✓</span>':'<span style="color:var(--b1)">—</span>'}</td>
-      <td style="text-align:center">${e.repliedAt?'<span style="color:var(--b)">✓</span>':'<span style="color:var(--b1)">—</span>'}</td>
-      <td style="text-align:center">${e.bounced?'<span style="color:var(--r)">⚠</span>':'<span style="color:var(--b1)">—</span>'}</td>
+      <td><span class="badge bc tss">${h(e.sendProvider||'')}</span></td>
+      <td style="text-align:center">${e.openedAt?`<span style="color:#34d399">✓</span><span class="tss tx" style="margin-left:4px">${e.openCount>1?`×${e.openCount}`:''}</span>`:'<span style="color:var(--b1)">—</span>'}</td>
+      <td style="text-align:center">${e.repliedAt?`<span style="color:#60a5fa">✓</span>`:'<span style="color:var(--b1)">—</span>'}</td>
+      <td style="text-align:center">${e.bounced?`<span style="color:#f87171">⚠</span>`:'<span style="color:var(--b1)">—</span>'}</td>
     </tr>`).join('');
-  }else{$('emailStatBox').style.display='none';$('sentBox').style.display='none'}
+  }else{
+    $('emailStatBox').style.display='none';
+    $('sentWrap').style.display='none';
+  }
 }
 
-// ─ Actions ────────────────────────────────────────────────
+// ── Actions ────────────────────────────────────────────────
 async function runPipeline(){
-  setBtn('heroBtn',true,'Running');
+  toast('Starting full pipeline — this takes ~60 seconds…','info',6000);
+  setBtn('heroBtn',true,'Running pipeline');
   try{
     const r=await req('/pipeline/run',{method:'POST',body:JSON.stringify({
       industries:['SaaS','FinTech'],companySizeMin:50,companySizeMax:1000,
       targetTitles:['VP Sales','CRO','Head of Growth'],seniority:['VP','C-Suite','Director'],
       geographies:['US','UK'],techSignals:['Salesforce','HubSpot'],painKeywords:['outbound','pipeline','conversion']
     })});
-    toast(`✅ ${r.pipeline.stage2.prospectsEnriched} prospects · ${r.pipeline.stage3.signalsCollected} signals · ${r.pipeline.stage4.draftsGenerated} drafts ready`);
-    await refreshAll();go('s5');
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('heroBtn',false)}
+    toast(`✅ Done! ${r.pipeline.stage2.prospectsEnriched} prospects · ${r.pipeline.stage3.signalsCollected} signals · ${r.pipeline.stage4.draftsGenerated} emails ready to review`);
+    await refreshAll();
+    go('s5');
+  }catch(e){toast('Pipeline failed: '+e.message,'er');}
+  finally{setBtn('heroBtn',false);}
 }
 
 async function runResearch(){
   setBtn('resBtn',true,'Researching');
   try{
-    const sp=id=>$(id).value.split(',').map(s=>s.trim()).filter(Boolean);
+    const sp=id=>($(id)?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
     const r=await req('/stage1/research',{method:'POST',body:JSON.stringify({
-      industries:sp('fi'),companySizeMin:parseInt($('fmin').value)||50,
-      companySizeMax:parseInt($('fmax').value)||2000,targetTitles:sp('ft'),
+      industries:sp('fi'),companySizeMin:parseInt($('fmin')?.value)||50,
+      companySizeMax:parseInt($('fmax')?.value)||2000,targetTitles:sp('ft'),
       seniority:['VP','C-Suite','Director'],geographies:sp('fg'),techSignals:sp('ftech'),painKeywords:sp('fp')
     })});
-    const src=r.dataSource==='demo'?'(AI demo data)':'✓ (real data from '+r.dataSource+')';
-    toast(`✅ ICP created — ${r.prospectCount} prospects ${src}`);
+    const src=r.dataSource==='demo'?'(AI demo data — connect Apollo for real contacts)':'✓ Real data from '+r.dataSource;
+    toast(`✅ ICP created · ${r.prospectCount} prospects ${src}`);
     await refreshAll();
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('resBtn',false)}
+  }catch(e){toast('Research failed: '+e.message,'er');}
+  finally{setBtn('resBtn',false);}
 }
 
-async function enrichProspects(){
-  if(!S.icps.length){toast('Create an ICP first','er');return}
+async function enrichMore(){
+  if(!S.icps.length){toast('Run Research first to create an ICP','er');return;}
   setBtn('enrBtn',true,'Enriching');
   try{
     const r=await req('/stage2/enrich',{method:'POST',body:JSON.stringify({icpId:S.icps[0].id})});
-    toast(`✅ ${r.enriched} prospects enriched`);await refreshAll();
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('enrBtn',false)}
+    toast(`✅ ${r.enriched} more prospects added`);await refreshAll();
+  }catch(e){toast(e.message,'er');}
+  finally{setBtn('enrBtn',false);}
 }
 
 async function collectSignals(){
+  if(!S.prospects.length){toast('You need prospects first. Run Research in Stage 1.','er');return;}
   setBtn('sigBtn',true,'Collecting');
   try{
     const r=await req('/stage3/collect',{method:'POST',body:JSON.stringify({})});
-    const src=r.dataSource==='ai-demo'?'(AI generated)':'✓ ('+r.dataSource+')';
+    const src=r.dataSource==='ai-demo'?'(AI generated)':'✓ from '+r.dataSource;
     toast(`✅ ${r.totalSignals} signals detected ${src}`);await refreshAll();
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('sigBtn',false)}
+  }catch(e){toast(e.message,'er');}
+  finally{setBtn('sigBtn',false);}
 }
 
 async function generateEmails(){
-  const need=S.prospects.filter(p=>(p.status==='hot'||p.status==='warm')&&p.draftCount===0);
-  if(!need.length){toast('All hot/warm prospects already have drafts');return}
+  // Fix: use prospects from state, check draftCount properly
+  const need=S.prospects.filter(p=>(p.status==='hot'||p.status==='warm')&&(p.draftCount||0)===0);
+  if(!need.length){
+    if(S.prospects.length>0)toast('All hot & warm prospects already have email drafts. Check Stage 5 to review them.','info');
+    else toast('You need prospects first. Run Research in Stage 1.','er');
+    return;
+  }
   setBtn('genBtn',true,'Generating');
   try{
     const r=await req('/stage4/generate-batch',{method:'POST',body:JSON.stringify({prospectIds:need.map(p=>p.id)})});
-    toast(`✅ ${r.created} emails generated`);await refreshAll();
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('genBtn',false)}
+    toast(`✅ ${r.created} personalised emails generated · ${r.alreadyExisted||0} already existed`);
+    await refreshAll();
+  }catch(e){toast(e.message,'er');}
+  finally{setBtn('genBtn',false);}
 }
 
 async function approve(id,action,e){
   e?.stopPropagation();
   try{
     await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action})});
-    toast(action==='approve'?'✅ Approved for sending':'Skipped');await refreshAll();
-  }catch(e){toast(e.message,'er')}
+    if(action==='approve')toast('✅ Approved — queued for sending');
+    else if(action==='skip')toast('Skipped');
+    await refreshAll();
+  }catch(e){toast(e.message,'er');}
 }
 
 async function sendAll(){
-  const n=S.queue.filter(d=>d.status==='approved').length;
-  if(!n){toast('No approved emails to send','er');return}
+  const approved=(S.queue||[]).filter(d=>d.status==='approved').length;
+  if(!approved){toast('No approved emails to send. Click ✓ Approve on emails in the queue first.','er');return;}
+  const isDemo=S.cfg.emailProvider==='demo';
+  if(isDemo&&!confirm(`Send ${approved} emails in DEMO mode (simulated, not real delivery)?\n\nAdd SendGrid in Settings to send real emails.`))return;
   setBtn('sndBtn',true,'Sending');
   try{
     const r=await req('/stage5/send-all',{method:'POST'});
-    const isDemoSend=r.provider==='demo';
-    toast(`✅ ${r.sent} emails ${isDemoSend?'simulated (add SendGrid or Engage to send real emails)':'sent via '+r.provider}`);
+    if(r.provider==='demo')toast(`✅ ${r.sent} emails simulated. Add SendGrid in Settings to send real emails.`,'info');
+    else toast(`✅ ${r.sent} emails sent via ${r.provider}`);
     await refreshAll();
-  }catch(e){toast(e.message,'er')}
-  finally{setBtn('sndBtn',false)}
+  }catch(e){toast(e.message,'er');}
+  finally{setBtn('sndBtn',false);}
 }
 
-// ─ Settings ───────────────────────────────────────────────
+// ── Settings ───────────────────────────────────────────────
+const INT_KEYS=['GROQ_API_KEY','ANTHROPIC_API_KEY','OPENAI_API_KEY',
+  'APOLLO_API_KEY','ZOOMINFO_CLIENT_ID','ZOOMINFO_CLIENT_SECRET',
+  'ENGAGE_API_KEY','ENGAGE_MAILBOX_EMAIL','HUNTER_API_KEY','LUSHA_API_KEY',
+  'SENDGRID_API_KEY','SENDGRID_FROM_EMAIL','SENDGRID_FROM_NAME','ADMIN_SECRET'];
+
 async function saveSettings(){
-  const keys=['GROQ_API_KEY','ANTHROPIC_API_KEY','OPENAI_API_KEY',
-    'APOLLO_API_KEY','ZOOMINFO_CLIENT_ID','ZOOMINFO_CLIENT_SECRET',
-    'ENGAGE_API_KEY','ENGAGE_MAILBOX_EMAIL','HUNTER_API_KEY','LUSHA_API_KEY',
-    'SENDGRID_API_KEY','SENDGRID_FROM_EMAIL','SENDGRID_FROM_NAME','ADMIN_SECRET'];
   const data={};
-  for(const k of keys){
+  for(const k of INT_KEYS){
     const el=$(k);
-    if(el&&el.value&&!el.value.includes('••••')) data[k]=el.value;
+    if(el&&el.value&&!el.value.includes('••••'))data[k]=el.value.trim();
   }
+  if(!Object.keys(data).length){toast('No new values to save','info');return;}
   try{
-    const adminSecret=$('ADMIN_SECRET')?.value || '';
-    await req('/settings',{method:'POST',headers:{'x-admin-secret':adminSecret},body:JSON.stringify(data)});
-    toast('✅ Settings saved — integrations active');
+    const adminSecret=data['ADMIN_SECRET']||$('ADMIN_SECRET')?.value||'';
+    await req('/settings',{method:'POST',headers:{'x-admin-secret':adminSecret||'no-secret'},body:JSON.stringify(data)});
+    toast('✅ Settings saved — integrations now active');
     await refreshAll();
-  }catch(e){toast('Failed to save: '+e.message,'er')}
+  }catch(e){toast('Save failed: '+e.message,'er');}
 }
 
-async function loadSettingsValues(){
+async function loadSettingsMasked(){
   try{
-    const r=await fetch(API+'/settings').then(x=>x.json());
-    const s=r.settings||{};
-    for(const[k,v] of Object.entries(s)){
+    const r=await fetch(API+'/settings').then(x=>x.json()).catch(()=>null);
+    if(!r?.settings)return;
+    for(const[k,v] of Object.entries(r.settings)){
       const el=$(k);
-      if(el&&v) el.placeholder=v; // Show masked values as placeholder
+      if(el&&v&&!el.value){el.placeholder=v;} // show masked value as placeholder
     }
   }catch{}
 }
 
-// ─ Modal ──────────────────────────────────────────────────
+// ── Modal ──────────────────────────────────────────────────
 function previewDraft(id){
   const d=S.drafts.find(x=>x.id===id)||S.queue.find(x=>x.id===id);
-  if(!d)return; S.cur=d;
+  if(!d)return;
+  S.cur=d;
   $('mTitle').textContent='Email Preview';
   $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.contact?.title||''} · ${d.prospect?.company?.name||''}`;
+  const spam=parseFloat(d.spamScore||0);
   $('mBody').innerHTML=`
-    <div style="margin-bottom:14px">
-      <div class="tss tx mb8" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Subject Lines</div>
-      ${(d.subjectLines||[]).map((s,i)=>`<div style="padding:9px 12px;border-radius:7px;margin-bottom:5px;font-size:13px;${i===0?'background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.2);font-weight:600':'background:var(--s2);color:var(--t3)'}"><span style="opacity:.4;margin-right:7px;font-family:monospace">#${i+1}</span>${h(s)}</div>`).join('')}
+    <div class="mb12">
+      <div class="tx2 tx mb6 fw7" style="text-transform:uppercase;letter-spacing:.07em">Subject Lines (pick one to approve)</div>
+      ${(d.subjectLines||[]).map((s,i)=>`<div style="padding:8px 11px;border-radius:7px;margin-bottom:4px;font-size:13px;cursor:pointer;${i===0?'background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.18);font-weight:600':'background:var(--s2);border:1px solid var(--b1);color:var(--t2)'}"><span style="opacity:.35;margin-right:6px;font-family:monospace;font-size:10px">#${i+1}</span>${h(s)}</div>`).join('')}
     </div>
-    <div style="height:1px;background:var(--b1);margin:14px 0"></div>
-    <div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div class="tss tx" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Email Body</div>
-        <button class="btn btn-s btn-sm" onclick="copyEmail()">📋 Copy</button>
+    <div style="height:1px;background:var(--b1);margin:12px 0"></div>
+    <div class="mb12">
+      <div class="flex aic jb mb6">
+        <div class="tx2 tx fw7" style="text-transform:uppercase;letter-spacing:.07em">Email Body</div>
+        <button class="btn btn-s btn-sm" onclick="copyEmail()" style="font-size:11px;padding:4px 10px">📋 Copy</button>
       </div>
       <div class="eb">${h(d.editedBody||d.body||'')}</div>
     </div>
-    <div class="g3 mb14">
-      <div class="kpi" style="padding:11px"><div class="kl">Spam Score</div><div class="kv" style="font-size:18px;${(d.spamScore||0)<=3?'color:var(--g)':(d.spamScore||0)<=5?'color:var(--a)':'color:var(--r)'}">${(d.spamScore||0).toFixed(1)}</div></div>
-      <div class="kpi" style="padding:11px"><div class="kl">Readability</div><div class="kv" style="font-size:18px;color:var(--b)">G${(d.readabilityGrade||0).toFixed(1)}</div></div>
-      <div class="kpi" style="padding:11px"><div class="kl">Words</div><div class="kv" style="font-size:18px;color:var(--v2)">${d.wordCount||0}</div></div>
+    <div class="g3 mb12">
+      <div style="text-align:center;background:var(--s2);border-radius:var(--rad);padding:10px">
+        <div class="tx2 tx mb4" style="text-transform:uppercase;letter-spacing:.07em">Spam Score</div>
+        <div style="font-size:18px;font-weight:700;${spam<=3?'color:#34d399':spam<=5?'color:#fbbf24':'color:#f87171'}">${spam.toFixed(1)}</div>
+        <div class="tx2 tx">${spam<=3?'✓ Clean':spam<=5?'⚠ Borderline':'✗ Risky'}</div>
+      </div>
+      <div style="text-align:center;background:var(--s2);border-radius:var(--rad);padding:10px">
+        <div class="tx2 tx mb4" style="text-transform:uppercase;letter-spacing:.07em">Readability</div>
+        <div style="font-size:18px;font-weight:700;color:#60a5fa">G${(d.readabilityGrade||0).toFixed(1)}</div>
+        <div class="tx2 tx">Grade 6–8 ideal</div>
+      </div>
+      <div style="text-align:center;background:var(--s2);border-radius:var(--rad);padding:10px">
+        <div class="tx2 tx mb4" style="text-transform:uppercase;letter-spacing:.07em">Words</div>
+        <div style="font-size:18px;font-weight:700;color:#a78bfa">${d.wordCount||0}</div>
+        <div class="tx2 tx">120–180 ideal</div>
+      </div>
     </div>
-    ${d.status==='pending'?`<div style="display:flex;gap:8px"><button class="btn btn-p w100" onclick="approve('${d.id}','approve');closeModal()">✓ Approve & Queue for Send</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`:''}`;
+    ${d.prospect?.topSignals?.length?`<div class="mb12"><div class="tx2 tx mb6 fw7" style="text-transform:uppercase;letter-spacing:.07em">Signals Used</div><div class="flex fw gap4">${d.prospect.topSignals.map(s=>`<div style="font-size:11px;background:var(--s2);border:1px solid var(--b1);border-radius:5px;padding:3px 7px;color:var(--t2)">${sigicon(s.signalType)} ${h(s.humanSummary?.substring(0,55)||'')}…</div>`).join('')}</div></div>`:''}
+    ${d.status==='pending'?`<div class="flex gap8"><button class="btn btn-p btn-full" onclick="approve('${d.id}','approve');closeModal()">✓ Approve &amp; Queue for Send</button><button class="btn btn-s btn-sm" onclick="editOpen('${d.id}')">✎ Edit First</button></div>`:`<div style="text-align:center;font-size:12px;color:var(--t2)">Status: ${d.status}</div>`}`;
   $('modal').classList.add('on');
 }
 
-function editDraftOpen(id,e){
+function editOpen(id,e){
   e?.stopPropagation();
-  const d=S.queue.find(x=>x.id===id);if(!d)return;
-  $('mTitle').textContent='Edit & Approve';
+  const d=S.queue.find(x=>x.id===id)||S.drafts.find(x=>x.id===id);if(!d)return;
+  $('mTitle').textContent='Edit Email';
   $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.company?.name||''}`;
   $('mBody').innerHTML=`
     <div class="fld"><label>Subject Line</label><input id="es" value="${h(d.editedSubject||d.subjectLines?.[0]||'')}"/></div>
     <div class="fld">
-      <label>Email Body <span class="tx" id="wc" style="font-weight:400">${d.wordCount||0}w</span></label>
-      <textarea id="eb" rows="12" oninput="$('wc').textContent=this.value.split(/\\s+/).filter(Boolean).length+'w'" style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:9px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace;line-height:1.65;outline:none;width:100%;resize:vertical">${h(d.editedBody||d.body||'')}</textarea>
+      <label>Body <span class="tx" id="wc" style="font-weight:400;text-transform:none;letter-spacing:0">${d.wordCount||0} words</span></label>
+      <textarea id="eb" rows="12" oninput="$('wc').textContent=this.value.split(/\\s+/).filter(Boolean).length+' words'" style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:9px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace;line-height:1.65;outline:none;width:100%;resize:vertical">${h(d.editedBody||d.body||'')}</textarea>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-p w100" onclick="saveEdit('${d.id}')">✓ Save & Approve</button>
+    <div class="flex gap8">
+      <button class="btn btn-p btn-full" onclick="saveEdit('${d.id}')">✓ Save &amp; Approve</button>
       <button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button>
     </div>`;
   $('modal').classList.add('on');
 }
 
 async function saveEdit(id){
+  const subj=$('es')?.value||'';
+  const body=$('eb')?.value||'';
+  if(!body.trim()){toast('Email body cannot be empty','er');return;}
   try{
-    await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action:'edit',editedSubject:$('es')?.value,editedBody:$('eb')?.value})});
-    toast('✅ Edited & Approved');closeModal();await refreshAll();
-  }catch(e){toast(e.message,'er')}
+    await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action:'edit',editedSubject:subj,editedBody:body})});
+    toast('✅ Email edited and approved');closeModal();await refreshAll();
+  }catch(e){toast(e.message,'er');}
 }
 
-function copyEmail(){navigator.clipboard.writeText(S.cur?.editedBody||S.cur?.body||'').then(()=>toast('📋 Copied to clipboard!'))}
+function copyEmail(){
+  const text=S.cur?.editedBody||S.cur?.body||'';
+  navigator.clipboard.writeText(text).then(()=>toast('📋 Copied to clipboard'));
+}
+
 function closeModal(){$('modal').classList.remove('on')}
 function outsideClose(e){if(e.target===$('modal'))closeModal()}
 
 async function doReset(){
-  if(!confirm('Reset ALL pipeline data? This cannot be undone.'))return;
-  const sec=prompt('Enter admin secret:','');
+  if(!confirm('⚠ Reset ALL pipeline data? This permanently deletes all ICPs, prospects, signals, drafts and sent emails.'))return;
+  const sec=prompt('Enter admin secret to confirm:','');
+  if(sec===null)return;
   try{
-    await req('/admin/reset',{method:'DELETE',headers:{'x-admin-secret':sec||''}});
+    await req('/admin/reset',{method:'DELETE',headers:{'x-admin-secret':sec}});
     toast('✅ All data reset');await refreshAll();
-  }catch(e){toast(e.message,'er')}
+  }catch(e){toast('Reset failed: '+e.message,'er');}
 }
 
-// ─ Init ───────────────────────────────────────────────────
+// ── Boot ───────────────────────────────────────────────────
 refreshAll();
-loadSettingsValues();
 </script>
 </body>
 </html>
