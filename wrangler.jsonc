@@ -4,8 +4,7 @@
   "compatibility_date": "2026-04-17",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": ".next/static",
-    "binding": "ASSETS"
+    "directory": ".next/static"
   },
   "observability": {
     "enabled": true
