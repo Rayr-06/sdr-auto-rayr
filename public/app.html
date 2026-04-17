@@ -4,140 +4,187 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>SDR Autopilot — AI Sales Pipeline</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07070f;--s1:#0f0f1a;--s2:#161625;--s3:#1d1d2e;
-  --b1:#ffffff08;--b2:#ffffff12;--b3:#ffffff1e;
+  --b1:#ffffff08;--b2:#ffffff12;--b3:#ffffff20;
   --t1:#eeeef8;--t2:#9090b0;--t3:#606080;
   --v:#7c5cfc;--v2:#a78bfa;--v3:#c4b5fd;
   --g:#34d399;--a:#fbbf24;--r:#f87171;--b:#60a5fa;
   --rad:10px;--rad2:14px;--rad3:20px;
+  /* Demo mode colors */
+  --demo-bg:rgba(251,191,36,.06);--demo-border:rgba(251,191,36,.25);--demo-text:#fbbf24;
+  /* Live mode colors */
+  --live-bg:rgba(52,211,153,.06);--live-border:rgba(52,211,153,.25);--live-text:#34d399;
 }
-html{font-size:14px}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 40% at 15% 0%,#7c5cfc18 0%,transparent 60%),
-             radial-gradient(ellipse 50% 50% at 85% 100%,#34d39910 0%,transparent 60%)}
-
-/* ─ Layout ─────────────────────────────── */
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 40% at 15% 0%,#7c5cfc18,transparent 60%),
+             radial-gradient(ellipse 50% 50% at 85% 100%,#34d39910,transparent 60%)}
 #app{min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
-.hd{height:58px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;border-bottom:1px solid var(--b1);
-  background:rgba(7,7,15,.85);backdrop-filter:blur(16px);position:sticky;top:0;z-index:50}
+
+/* ─ Header ─── */
+.hd{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+  border-bottom:1px solid var(--b1);background:rgba(7,7,15,.88);backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:50}
 .logo{display:flex;align-items:center;gap:9px;text-decoration:none}
-.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--v),var(--v2));
-  border-radius:8px;display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:#fff}
-.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--t1)}
+.lm{width:30px;height:30px;background:linear-gradient(135deg,var(--v),var(--v2));border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;
+  font-weight:800;font-size:12px;color:#fff}
+.lt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
 .ls{font-size:11px;color:var(--t3);display:block;margin-top:1px}
 .hd-r{display:flex;align-items:center;gap:8px}
 
-/* ─ Nav ─────────────────────────────────── */
-.nav{display:flex;overflow-x:auto;scrollbar-width:none;
-  border-bottom:1px solid var(--b1);background:rgba(15,15,26,.6);padding:0 20px}
-.nav::-webkit-scrollbar{display:none}
-.nb{display:flex;align-items:center;gap:6px;padding:11px 14px;font-size:13px;
-  font-weight:500;color:var(--t3);border:none;background:none;cursor:pointer;
-  white-space:nowrap;border-bottom:2px solid transparent;transition:.15s;
-  font-family:'DM Sans',sans-serif}
-.nb:hover{color:var(--t1)}
-.nb.on{color:var(--v3);border-bottom-color:var(--v)}
-.nb svg{width:14px;height:14px;flex-shrink:0}
+/* ─ Demo/Live banner ─── */
+.mode-banner{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;
+  font-size:11px;font-weight:700;border:1px solid;cursor:pointer;transition:.15s}
+.mode-banner.demo{background:var(--demo-bg);border-color:var(--demo-border);color:var(--demo-text)}
+.mode-banner.live{background:var(--live-bg);border-color:var(--live-border);color:var(--live-text)}
+.mode-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite}
+.mode-banner.demo .mode-dot{background:var(--demo-text)}
+.mode-banner.live .mode-dot{background:var(--live-text)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-/* ─ Main ────────────────────────────────── */
+/* ─ Nav ─── */
+.nav{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--b1);
+  background:rgba(15,15,26,.6);padding:0 20px}
+.nav::-webkit-scrollbar{display:none}
+.nb{display:flex;align-items:center;gap:6px;padding:11px 14px;font-size:13px;font-weight:500;
+  color:var(--t3);border:none;background:none;cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:.15s;font-family:'DM Sans',sans-serif}
+.nb:hover{color:var(--t1)}.nb.on{color:var(--v3);border-bottom-color:var(--v)}
+.nb svg{width:14px;height:14px;flex-shrink:0}
+.nb .badge-count{background:rgba(248,113,113,.15);color:var(--r);border-radius:99px;
+  padding:1px 6px;font-size:10px;font-weight:700}
+
+/* ─ Main ─── */
 .main{flex:1;max-width:1140px;width:100%;margin:0 auto;padding:28px 20px}
 .tab{display:none}.tab.on{display:block;animation:fu .25s ease-out}
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* ─ Cards ───────────────────────────────── */
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:22px}
+/* ─ Demo mode overlay on cards ─── */
+.demo-watermark{position:relative}
+.demo-watermark::after{content:'DEMO DATA';position:absolute;top:8px;right:8px;
+  font-size:9px;font-weight:800;letter-spacing:.1em;padding:2px 7px;border-radius:99px;
+  background:var(--demo-bg);color:var(--demo-text);border:1px solid var(--demo-border);pointer-events:none}
+
+/* ─ Cards ─── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:22px;transition:.2s}
 .card:hover{border-color:var(--b2)}
 .card-sm{padding:14px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
-@media(max-width:560px){.g6{grid-template-columns:repeat(2,1fr)}}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:560px){.g4{grid-template-columns:1fr 1fr}}
 
-/* ─ KPI cards ───────────────────────────── */
-.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);
-  padding:16px;transition:.2s;animation:fu .4s both}
+/* ─ KPI ─── */
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad);padding:16px;transition:.2s;animation:fu .4s both}
 .kpi:hover{border-color:var(--b2);transform:translateY(-1px)}
-.kl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px}
+.kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:7px}
 .kv{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;line-height:1}
 .ks{font-size:11px;color:var(--t3);margin-top:5px}
 
-/* ─ Hero ─────────────────────────────────── */
+/* ─ Integration cards ─── */
+.int-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rad2);padding:18px;
+  display:flex;flex-direction:column;gap:12px;transition:.2s}
+.int-card:hover{border-color:var(--b2)}
+.int-card.connected{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.03)}
+.int-card.partial{border-color:rgba(251,191,36,.2)}
+.int-header{display:flex;align-items:center;justify-content:space-between}
+.int-logo{display:flex;align-items:center;gap:10px}
+.int-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--b2)}
+.int-name{font-weight:700;font-size:14px}
+.int-cat{font-size:11px;color:var(--t3);margin-top:1px}
+.int-status{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
+.int-status.live{color:var(--g)}.int-status.demo{color:var(--a)}.int-status.off{color:var(--t3)}
+.int-desc{font-size:12px;color:var(--t2);line-height:1.5}
+.int-fields{display:flex;flex-direction:column;gap:8px}
+.int-field{display:flex;flex-direction:column;gap:4px}
+.int-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3)}
+.int-field input{background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:8px 11px;
+  color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;
+  font-family:'JetBrains Mono',monospace;font-size:12px;transition:.15s}
+.int-field input:focus{border-color:rgba(124,92,252,.4);box-shadow:0 0 0 2px rgba(124,92,252,.1)}
+.int-field input::placeholder{color:var(--t3)}
+.int-actions{display:flex;gap:8px}
+
+/* ─ Hero ─── */
 .hero{background:linear-gradient(135deg,rgba(124,92,252,.1),rgba(167,139,250,.05));
-  border:1px solid rgba(124,92,252,.18);border-radius:var(--rad3);padding:44px 36px;
+  border:1px solid rgba(124,92,252,.18);border-radius:var(--rad3);padding:40px 36px;
   position:relative;overflow:hidden;margin-bottom:24px}
-.hero::after{content:'';position:absolute;top:-80px;right:-80px;
-  width:240px;height:240px;border-radius:50%;
-  background:radial-gradient(circle,rgba(124,92,252,.12),transparent 70%)}
+.hero::after{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;
+  border-radius:50%;background:radial-gradient(circle,rgba(124,92,252,.12),transparent 70%)}
 .htag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
   background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.22);
-  border-radius:99px;font-size:11px;font-weight:600;color:var(--v3);margin-bottom:18px}
-.hero h2{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;
+  border-radius:99px;font-size:11px;font-weight:700;color:var(--v3);margin-bottom:16px}
+.hero h2{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,38px);font-weight:800;
   letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
 .hero h2 em{font-style:normal;background:linear-gradient(90deg,var(--v3),var(--g));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{font-size:14px;color:var(--t2);max-width:460px;line-height:1.6;margin-bottom:24px}
-.hstats{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:24px}
-.hs{font-size:12px;color:var(--t2)}.hs b{color:var(--t1);font-weight:600}
+.hero p{font-size:14px;color:var(--t2);max-width:460px;line-height:1.6;margin-bottom:20px}
 
-/* ─ Pipeline flow ───────────────────────── */
+/* ─ Demo mode alert ─── */
+.demo-alert{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);
+  border-radius:var(--rad);padding:14px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.demo-alert-icon{font-size:18px;flex-shrink:0;margin-top:-1px}
+.demo-alert-text{font-size:13px;color:var(--a);line-height:1.5}
+.demo-alert-text b{font-weight:700}
+.demo-alert-text a{color:var(--a);text-decoration:underline;cursor:pointer}
+
+/* ─ Pipeline flow ─── */
 .pflow{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
 .pflow::-webkit-scrollbar{display:none}
 .psb{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:72px;
-  background:none;border:none;cursor:pointer;padding:10px 6px;border-radius:var(--rad);
-  transition:.15s;color:var(--t1)}
+  background:none;border:none;cursor:pointer;padding:10px 6px;border-radius:var(--rad);transition:.15s;color:var(--t1)}
 .psb:hover{background:var(--s2)}
-.psi{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;
-  justify-content:center;font-size:17px;border:1px solid var(--b1);transition:.15s}
+.psi{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--b1);transition:.15s}
 .psb:hover .psi{border-color:var(--b2);transform:scale(1.06)}
 .psc{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
 .psl{font-size:10px;font-weight:500;color:var(--t3)}
 .arr{color:var(--b2);flex-shrink:0;font-size:14px;margin-top:-14px}
+.g6{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+@media(max-width:900px){.g6{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.g6{grid-template-columns:repeat(2,1fr)}}
 
-/* ─ Buttons ─────────────────────────────── */
+/* ─ Buttons ─── */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rad);
-  font-weight:600;font-size:13px;border:none;cursor:pointer;transition:.15s;
-  font-family:'DM Sans',sans-serif;text-decoration:none}
+  font-weight:600;font-size:13px;border:none;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
 .btn-p{background:var(--v);color:#fff}.btn-p:hover{background:#6d4ef0;transform:translateY(-1px)}
 .btn-p:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-s{background:var(--s2);color:var(--t1);border:1px solid var(--b2)}
-.btn-s:hover{border-color:var(--b3);background:var(--s3)}
+.btn-s{background:var(--s2);color:var(--t1);border:1px solid var(--b2)}.btn-s:hover{border-color:var(--b3);background:var(--s3)}
+.btn-g{background:rgba(52,211,153,.12);color:var(--g);border:1px solid rgba(52,211,153,.25)}.btn-g:hover{background:rgba(52,211,153,.18)}
 .btn-sm{padding:7px 14px;font-size:12px}
 .btn-ic{width:32px;height:32px;padding:0;justify-content:center;border-radius:8px}
-.btn-d{background:rgba(248,113,113,.1);color:var(--r);border:1px solid rgba(248,113,113,.2)}
-.btn-d:hover{background:rgba(248,113,113,.18)}
+.btn-d{background:rgba(248,113,113,.1);color:var(--r);border:1px solid rgba(248,113,113,.2)}.btn-d:hover{background:rgba(248,113,113,.18)}
 
-/* ─ Forms ───────────────────────────────── */
+/* ─ Forms ─── */
 .fld{margin-bottom:14px}
 .fld label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;
   letter-spacing:.08em;color:var(--t3);margin-bottom:5px}
 .fld input,.fld textarea,.fld select{width:100%;background:var(--s2);border:1px solid var(--b2);
-  border-radius:8px;padding:9px 11px;color:var(--t1);font-size:13px;
-  font-family:'DM Sans',sans-serif;transition:.15s;outline:none}
-.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 2px rgba(124,92,252,.12)}
+  border-radius:8px;padding:9px 11px;color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;
+  transition:.15s;outline:none}
+.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 2px rgba(124,92,252,.1)}
 .fld input::placeholder{color:var(--t3)}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:560px){.r2{grid-template-columns:1fr}}
 
-/* ─ Table ───────────────────────────────── */
+/* ─ Table ─── */
 .tw{overflow-x:auto;border-radius:var(--rad);border:1px solid var(--b1)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead tr{background:var(--s2)}
-th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
+th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--t3);white-space:nowrap}
 td{padding:11px 14px;border-top:1px solid var(--b1);vertical-align:middle}
 tr:hover td{background:rgba(255,255,255,.015)}
 .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--v),var(--v2));
   display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
 
-/* ─ Badges ──────────────────────────────── */
+/* ─ Badges ─── */
 .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;
   font-size:10px;font-weight:700;border:1px solid transparent;white-space:nowrap}
 .bh{background:rgba(248,113,113,.1);color:var(--r);border-color:rgba(248,113,113,.2)}
@@ -152,14 +199,14 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .se{background:rgba(52,211,153,.1);color:var(--g)}.sl{background:rgba(248,113,113,.1);color:var(--r)}
 .sp{background:rgba(129,140,248,.1);color:#818cf8}
 
-/* ─ Score bar ───────────────────────────── */
+/* ─ Score bar ─── */
 .sb{display:flex;align-items:center;gap:7px;min-width:76px}
 .st2{flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
 .sf2{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--v),var(--v2))}
 .sn2{font-size:11px;font-weight:700;width:22px;text-align:right;color:var(--t3)}
 
-/* ─ Modal ───────────────────────────────── */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
+/* ─ Modal ─── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);
   z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;
   opacity:0;pointer-events:none;transition:.2s}
 .mo.on{opacity:1;pointer-events:all}
@@ -168,69 +215,66 @@ tr:hover td{background:rgba(255,255,255,.015)}
   transform:scale(.96);transition:.2s}
 .mo.on .md{transform:scale(1)}
 .mh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-.mt{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
-.mc{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;
-  padding:3px 6px;border-radius:6px;transition:.15s}
+.mt2{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.mc{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:3px 6px;border-radius:6px;transition:.15s}
 .mc:hover{color:var(--t1)}
 .eb{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rad);
-  padding:14px;font-size:12px;white-space:pre-wrap;line-height:1.7;
-  font-family:'JetBrains Mono',monospace;color:var(--t1)}
+  padding:14px;font-size:12px;white-space:pre-wrap;line-height:1.7;font-family:'JetBrains Mono',monospace;color:var(--t1)}
 
-/* ─ Toast ───────────────────────────────── */
+/* ─ Toast ─── */
 .tc{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:7px}
 .tos{background:var(--s1);border:1px solid var(--b2);border-radius:var(--rad);
   padding:11px 15px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;
-  animation:fu .3s ease-out;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  animation:fu .3s ease-out;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .tok{border-color:rgba(52,211,153,.25)}.ter{border-color:rgba(248,113,113,.25)}
 .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.15);
   border-top-color:currentColor;border-radius:50%;animation:rot .7s linear infinite;flex-shrink:0}
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ─ Provider pill ───────────────────────── */
-.pp{display:flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;
-  border:1px solid var(--b2);font-size:11px;font-weight:600;cursor:default}
-.pd{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ─ Signal item ─── */
+.sgi{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--b1)}
+.sgi:last-child{border-bottom:none}
+.sgic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
 
-/* ─ Empty ───────────────────────────────── */
-.emp{text-align:center;padding:52px 16px;color:var(--t3)}
-.ei{font-size:36px;margin-bottom:10px;opacity:.25}
-.emp h3{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:5px}
-.emp p{font-size:12px;line-height:1.5}
-
-/* ─ Section header ──────────────────────── */
-.sh3{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:22px}
-.st3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
-.ss{font-size:13px;color:var(--t2);margin-top:2px}
-
-/* ─ Draft item ──────────────────────────── */
+/* ─ Draft item ─── */
 .di{display:flex;align-items:flex-start;gap:10px;padding:14px;border-radius:var(--rad);
   border:1px solid var(--b1);margin-bottom:8px;cursor:pointer;transition:.15s}
 .di:hover{border-color:var(--b2);background:rgba(124,92,252,.03)}
 .dm{display:flex;gap:10px;font-size:11px;color:var(--t3);margin-top:4px}
 
-/* ─ Action buttons ──────────────────────── */
+/* ─ Action buttons ─── */
 .abs{display:flex;gap:5px;flex-shrink:0}
 .ab{width:30px;height:30px;border-radius:7px;border:1px solid var(--b1);background:none;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;
-  transition:.15s;color:var(--t3)}
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.15s;color:var(--t3)}
 .ab:hover{border-color:var(--b2);color:var(--t1)}
 .ab.ap:hover{border-color:rgba(52,211,153,.3);color:var(--g);background:rgba(52,211,153,.07)}
 .ab.ed:hover{border-color:rgba(96,165,250,.3);color:var(--b);background:rgba(96,165,250,.07)}
 .ab.sk:hover{border-color:var(--b2);color:var(--t3)}
 
-/* ─ Signal item ─────────────────────────── */
-.sgi{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--b1)}
-.sgi:last-child{border-bottom:none}
-.sgic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;flex-shrink:0;font-size:15px}
+/* ─ Section header ─── */
+.sh3{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.st3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.ss{font-size:13px;color:var(--t2);margin-top:2px}
 
-/* ─ Footer ──────────────────────────────── */
+/* ─ Empty ─── */
+.emp{text-align:center;padding:52px 16px;color:var(--t3)}
+.ei{font-size:36px;margin-bottom:10px;opacity:.25}
+.emp h3{font-size:14px;font-weight:600;color:var(--t2);margin-bottom:5px}
+.emp p{font-size:12px;line-height:1.5}
+
+/* ─ Settings section ─── */
+.settings-section{margin-bottom:32px}
+.settings-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;
+  margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.settings-section-sub{font-size:12px;color:var(--t2);margin-bottom:16px}
+.sep{height:1px;background:var(--b1);margin:24px 0}
+
+/* ─ Footer ─── */
 .ft{border-top:1px solid var(--b1);padding:14px 20px;display:flex;align-items:center;
   justify-content:space-between;font-size:11px;color:var(--t3)}
 .ft a{color:var(--t3);text-decoration:none;transition:.15s}.ft a:hover{color:var(--t1)}
 
-/* ─ Utils ───────────────────────────────── */
+/* ─ Utils ─── */
 .flex{display:flex}.aic{align-items:center}.jb{justify-content:space-between}
 .fw{flex-wrap:wrap}.f1{flex:1}.mn0{min-width:0}.gap6{gap:6px}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}
 .mb6{margin-bottom:6px}.mb10{margin-bottom:10px}.mb14{margin-bottom:14px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
@@ -239,24 +283,28 @@ tr:hover td{background:rgba(255,255,255,.015)}
 .fw6{font-weight:600}.fw7{font-weight:700}
 .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
 .w100{width:100%}
-.sep{height:1px;background:var(--b1);margin:14px 0}
 </style>
 </head>
 <body>
 <div id="app">
 
+<!-- Header -->
 <header class="hd">
   <a class="logo" href="#">
     <div class="lm">SR</div>
-    <div><div class="lt">SDR Autopilot</div><span class="ls">AI Sales Pipeline · RAYR</span></div>
+    <div><div class="lt">SDR Autopilot</div><span class="ls">by RAYR · Adithya Sharma</span></div>
   </a>
   <div class="hd-r">
-    <div class="pp" id="ppill"><span class="pd"></span><span id="plabel">Demo</span></div>
+    <div class="mode-banner demo" id="modeBanner" onclick="go('settings')" title="Click to configure integrations">
+      <span class="mode-dot"></span>
+      <span id="modeLabel">Demo Mode</span>
+    </div>
     <button class="btn btn-s btn-sm btn-ic" onclick="refreshAll()" title="Refresh">↻</button>
-    <button class="btn btn-s btn-sm btn-ic" onclick="doReset()" title="Reset" style="color:var(--r)">⊗</button>
+    <button class="btn btn-s btn-sm btn-ic" onclick="doReset()" title="Reset data" style="color:var(--r)">⊗</button>
   </div>
 </header>
 
+<!-- Nav -->
 <nav class="nav">
   <button class="nb on" onclick="go('ov',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Overview
@@ -265,7 +313,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Research
   </button>
   <button class="nb" onclick="go('s2',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Prospects
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Prospects
   </button>
   <button class="nb" onclick="go('s3',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Signals
@@ -275,29 +323,38 @@ tr:hover td{background:rgba(255,255,255,.015)}
   </button>
   <button class="nb" onclick="go('s5',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send
+    <span class="badge-count" id="pendingCount" style="display:none">0</span>
+  </button>
+  <button class="nb" onclick="go('settings',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings
   </button>
 </nav>
 
 <main class="main">
 
-<!-- OVERVIEW -->
+<!-- ─ OVERVIEW ───────────────────────────────────────────── -->
 <div id="ov" class="tab on">
+  <!-- Demo alert -->
+  <div class="demo-alert" id="demoAlert">
+    <div class="demo-alert-icon">⚠️</div>
+    <div class="demo-alert-text">
+      <b>Demo Mode Active</b> — Prospects and signals are AI-generated, not real data. Emails are simulated.<br/>
+      <a onclick="go('settings')">→ Go to Settings</a> to connect Apollo, ZoomInfo, Hunter or Lusha for real verified prospects.
+    </div>
+  </div>
+
   <div id="heroBox" class="hero mb24">
     <div class="htag">⚡ AI-Powered · Human-Approved</div>
     <h2>Your AI sales pipeline.<br><em>Research to reply in 30 min.</em></h2>
-    <p>5-stage automation from ICP definition to personalised email delivery. AI does the work, you approve.</p>
-    <div class="hstats">
-      <div class="hs"><b>&lt; 3 min</b> / prospect</div>
-      <div class="hs"><b>100–200</b> prospects/day</div>
-      <div class="hs"><b>+60%</b> reply rate</div>
-    </div>
-    <div class="flex gap10 fw">
+    <p>5-stage automation: ICP → Prospects → Signals → Emails → Send. AI does the work, you approve every email.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
       <button class="btn btn-p" id="heroBtn" onclick="runPipeline()">▶ Run Full Pipeline</button>
+      <button class="btn btn-s btn-sm" onclick="go('settings')">⚙ Configure Integrations</button>
     </div>
   </div>
 
   <div class="card mb14">
-    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Pipeline · click to navigate</div>
+    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Pipeline Flow · click to navigate</div>
     <div class="pflow">
       <button class="psb" onclick="go('s1')"><div class="psc" id="pf0">0</div><div class="psi" style="background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.15)">🔍</div><div class="psl">Research</div></button>
       <div class="arr">→</div>
@@ -319,35 +376,27 @@ tr:hover td{background:rgba(255,255,255,.015)}
     <div class="kpi"><div class="kl">Sent</div><div class="kv" id="k4">0</div></div>
     <div class="kpi"><div class="kl">Open Rate</div><div class="kv" id="k5">0%</div><div class="ks" id="k5s">0% reply</div></div>
   </div>
-
-  <div id="quickBox">
-    <div class="tss tx mb10" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Start a stage</div>
-    <div class="g3">
-      <div class="card card-sm" style="cursor:pointer" onclick="go('s1')"><div style="font-size:22px;margin-bottom:7px">🎯</div><div class="fw6 mb6">Define ICP</div><div class="ts tx">Set target market criteria</div></div>
-      <div class="card card-sm" style="cursor:pointer" onclick="go('s3')"><div style="font-size:22px;margin-bottom:7px">📡</div><div class="fw6 mb6">Collect Signals</div><div class="ts tx">Detect buying intent</div></div>
-      <div class="card card-sm" style="cursor:pointer" onclick="go('s4')"><div style="font-size:22px;margin-bottom:7px">✍️</div><div class="fw6 mb6">Generate Emails</div><div class="ts tx">AI-crafted outreach</div></div>
-    </div>
-  </div>
 </div>
 
-<!-- STAGE 1 -->
+<!-- ─ STAGE 1 ─────────────────────────────────────────────── -->
 <div id="s1" class="tab">
   <div class="sh3">
-    <div><div class="st3">Market Research</div><div class="ss">Define ICP → AI generates prospects + analysis</div></div>
+    <div><div class="st3">Market Research</div><div class="ss">Define ICP → AI generates prospects + competitive analysis</div></div>
     <button class="btn btn-p btn-sm" id="resBtn" onclick="runResearch()">🔍 Run Research</button>
   </div>
+  <div id="dataSourceBadge" class="mb14"></div>
   <div class="g2">
     <div class="card">
       <div class="fw7 mb14" style="font-family:'Syne',sans-serif">ICP Configuration</div>
-      <div class="fld"><label>Industries</label><input id="fi" value="SaaS, FinTech, B2B SaaS"/></div>
-      <div class="fld"><label>Target Titles</label><input id="ft" value="VP Sales, CRO, Head of Growth"/></div>
+      <div class="fld"><label>Industries</label><input id="fi" value="SaaS, FinTech, B2B SaaS" placeholder="SaaS, FinTech"/></div>
+      <div class="fld"><label>Target Titles</label><input id="ft" value="VP Sales, CRO, Head of Growth" placeholder="VP Sales, CRO"/></div>
       <div class="r2">
         <div class="fld"><label>Min Employees</label><input id="fmin" type="number" value="50"/></div>
         <div class="fld"><label>Max Employees</label><input id="fmax" type="number" value="2000"/></div>
       </div>
-      <div class="fld"><label>Geographies</label><input id="fg" value="US, UK, IN"/></div>
-      <div class="fld"><label>Tech Signals</label><input id="ftech" value="Salesforce, HubSpot"/></div>
-      <div class="fld"><label>Pain Keywords</label><input id="fp" value="outbound, pipeline, conversion"/></div>
+      <div class="fld"><label>Geographies</label><input id="fg" value="US, UK, IN" placeholder="US, UK"/></div>
+      <div class="fld"><label>Tech Signals</label><input id="ftech" value="Salesforce, HubSpot" placeholder="Salesforce, HubSpot"/></div>
+      <div class="fld"><label>Pain Keywords</label><input id="fp" value="outbound, pipeline, conversion" placeholder="outbound, pipeline"/></div>
     </div>
     <div class="card" id="icpBox">
       <div class="fw7 mb14" style="font-family:'Syne',sans-serif">Created ICPs</div>
@@ -356,28 +405,29 @@ tr:hover td{background:rgba(255,255,255,.015)}
   </div>
 </div>
 
-<!-- STAGE 2 -->
+<!-- ─ STAGE 2 ─────────────────────────────────────────────── -->
 <div id="s2" class="tab">
   <div class="sh3">
     <div><div class="st3">Prospect Profiling</div><div class="ss" id="p2sub">0 prospects</div></div>
-    <div class="flex gap8 aic fw">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <select id="pfilter" onchange="renderProspects()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:7px 11px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif">
         <option value="all">All Status</option><option value="hot">🔴 Hot</option>
         <option value="warm">🟡 Warm</option><option value="cold">⚪ Cold</option>
       </select>
-      <button class="btn btn-p btn-sm" id="enrBtn" onclick="enrichProspects()">👥 Enrich</button>
+      <button class="btn btn-p btn-sm" id="enrBtn" onclick="enrichProspects()">👥 Enrich More</button>
     </div>
   </div>
+  <div id="prospectSourceTag" class="mb14"></div>
   <div class="tw"><table>
     <thead><tr><th>Contact</th><th>Company</th><th>ICP Score</th><th>Intent</th><th>Status</th></tr></thead>
     <tbody id="ptbl"><tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>No prospects yet</h3><p>Run Research first</p></div></td></tr></tbody>
   </table></div>
 </div>
 
-<!-- STAGE 3 -->
+<!-- ─ STAGE 3 ─────────────────────────────────────────────── -->
 <div id="s3" class="tab">
   <div class="sh3">
-    <div><div class="st3">Intent Signals</div><div class="ss" id="s3sub">0 signals</div></div>
+    <div><div class="st3">Intent Signals</div><div class="ss" id="s3sub">0 signals detected</div></div>
     <button class="btn btn-p btn-sm" id="sigBtn" onclick="collectSignals()">⚡ Collect Signals</button>
   </div>
   <div class="card" id="sigBox">
@@ -385,7 +435,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
   </div>
 </div>
 
-<!-- STAGE 4 -->
+<!-- ─ STAGE 4 ─────────────────────────────────────────────── -->
 <div id="s4" class="tab">
   <div class="sh3">
     <div><div class="st3">Content Generation</div><div class="ss" id="s4sub">0 drafts</div></div>
@@ -394,7 +444,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
   <div id="draftBox"><div class="emp"><div class="ei">✍️</div><h3>No drafts yet</h3><p>Generate emails for hot & warm prospects</p></div></div>
 </div>
 
-<!-- STAGE 5 -->
+<!-- ─ STAGE 5 ─────────────────────────────────────────────── -->
 <div id="s5" class="tab">
   <div class="sh3">
     <div><div class="st3">Approval & Send</div><div class="ss" id="s5sub">Review and approve before sending</div></div>
@@ -405,6 +455,7 @@ tr:hover td{background:rgba(255,255,255,.015)}
     <div class="kpi"><div class="kl">Reply Rate</div><div class="kv" id="es1">0%</div></div>
     <div class="kpi"><div class="kl">Bounce Rate</div><div class="kv" id="es2">0%</div></div>
   </div>
+  <div id="emailProviderTag" class="mb14"></div>
   <div id="queueBox" class="mb20"></div>
   <div id="sentBox" style="display:none">
     <div class="fw7 mb10" style="font-family:'Syne',sans-serif">Sent Emails</div>
@@ -415,19 +466,175 @@ tr:hover td{background:rgba(255,255,255,.015)}
   </div>
 </div>
 
+<!-- ─ SETTINGS ────────────────────────────────────────────── -->
+<div id="settings" class="tab">
+  <div class="sh3">
+    <div><div class="st3">Integrations & Settings</div><div class="ss">Connect real data sources to replace demo data</div></div>
+    <button class="btn btn-g btn-sm" onclick="saveSettings()">💾 Save All Settings</button>
+  </div>
+
+  <!-- How it works -->
+  <div class="card mb20" style="background:rgba(124,92,252,.05);border-color:rgba(124,92,252,.15)">
+    <div class="fw7 mb10" style="font-family:'Syne',sans-serif;font-size:15px">🔧 How integrations work</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">Data Source</b><br/>Apollo, ZoomInfo, Hunter, or Lusha provide real verified prospects and intent signals</div>
+      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">AI Engine</b><br/>Groq (free), Claude, or OpenAI writes personalised emails using real prospect data</div>
+      <div style="font-size:12px;color:var(--t2)"><b style="color:var(--v3)">Email Delivery</b><br/>Engage cadences or SendGrid sends and tracks opens, replies, bounces in real time</div>
+    </div>
+  </div>
+
+  <!-- AI Provider -->
+  <div class="settings-section">
+    <div class="settings-section-title">🤖 AI Provider <span id="ai-status-badge"></span></div>
+    <div class="settings-section-sub">Powers email generation, ICP analysis, and signal detection. Groq is free — get a key in 30 seconds at console.groq.com</div>
+    <div class="g3">
+      <div class="int-card" id="ic-groq">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">⚡</div><div><div class="int-name">Groq</div><div class="int-cat">AI · Free</div></div></div>
+          <div class="int-status demo" id="st-groq">● Not connected</div>
+        </div>
+        <div class="int-desc">Llama 3.3 70B. Fastest AI, completely free. Best for getting started.</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="GROQ_API_KEY" placeholder="gsk_..." autocomplete="off"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-anthropic">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🔮</div><div><div class="int-name">Claude</div><div class="int-cat">AI · Paid</div></div></div>
+          <div class="int-status demo" id="st-anthropic">● Not connected</div>
+        </div>
+        <div class="int-desc">Best email quality. Claude Sonnet 4. console.anthropic.com</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="ANTHROPIC_API_KEY" placeholder="sk-ant-..." autocomplete="off"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-openai">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🧠</div><div><div class="int-name">OpenAI</div><div class="int-cat">AI · Paid</div></div></div>
+          <div class="int-status demo" id="st-openai">● Not connected</div>
+        </div>
+        <div class="int-desc">GPT-4o-mini or GPT-4o. platform.openai.com</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="OPENAI_API_KEY" placeholder="sk-..." autocomplete="off"/></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- Data Sources -->
+  <div class="settings-section">
+    <div class="settings-section-title">📊 Prospect Data Source <span id="data-status-badge"></span></div>
+    <div class="settings-section-sub">Connect one of these to get real verified B2B contacts instead of AI demo data. Apollo is the most popular and affordable option.</div>
+    <div class="g2">
+      <div class="int-card" id="ic-apollo">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🚀</div><div><div class="int-name">Apollo.io</div><div class="int-cat">Prospects · 275M contacts · $59/mo</div></div></div>
+          <div class="int-status demo" id="st-apollo">● Not connected</div>
+        </div>
+        <div class="int-desc">Best value. 275M verified contacts, built-in sequencing, firmographic + technographic filters. Most popular choice for outbound SDR teams.</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="APOLLO_API_KEY" placeholder="apollo_api_key_..." autocomplete="off"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-zoominfo">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🔍</div><div><div class="int-name">ZoomInfo</div><div class="int-cat">Prospects + Intent · Enterprise</div></div></div>
+          <div class="int-status demo" id="st-zoominfo">● Not connected</div>
+        </div>
+        <div class="int-desc">Enterprise-grade. Org charts, verified contacts, and proprietary buyer intent signals. Best for multi-threaded enterprise outreach.</div>
+        <div class="int-fields">
+          <div class="int-field"><label>Client ID</label><input id="ZOOMINFO_CLIENT_ID" placeholder="zi_client_id" autocomplete="off"/></div>
+          <div class="int-field"><label>Client Secret</label><input id="ZOOMINFO_CLIENT_SECRET" placeholder="zi_client_secret" type="password" autocomplete="off"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-hunter">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🎯</div><div><div class="int-name">Hunter.io</div><div class="int-cat">Email Finder · Free tier available</div></div></div>
+          <div class="int-status demo" id="st-hunter">● Not connected</div>
+        </div>
+        <div class="int-desc">Find verified email addresses by domain or name. 25 free searches/month. Great for small teams. hunter.io</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="HUNTER_API_KEY" placeholder="hunter_api_key_..." autocomplete="off"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-lusha">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">📋</div><div><div class="int-name">Lusha</div><div class="int-cat">Contacts · Free tier available</div></div></div>
+          <div class="int-status demo" id="st-lusha">● Not connected</div>
+        </div>
+        <div class="int-desc">Fast contact enrichment with direct dials. GDPR compliant. Free plan available. lusha.com</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="LUSHA_API_KEY" placeholder="lusha_api_key_..." autocomplete="off"/></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- Email Sending -->
+  <div class="settings-section">
+    <div class="settings-section-title">📤 Email Delivery <span id="email-status-badge"></span></div>
+    <div class="settings-section-sub">Connect one of these to send real emails. Without this, sends are simulated with demo open/reply data.</div>
+    <div class="g2">
+      <div class="int-card" id="ic-engage">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">🎪</div><div><div class="int-name">ZoomInfo Engage</div><div class="int-cat">Sending + Sequences + Tracking</div></div></div>
+          <div class="int-status demo" id="st-engage">● Not connected</div>
+        </div>
+        <div class="int-desc">Best for ZoomInfo users. Real multi-step cadences, live open/reply/bounce tracking, auto-follow-ups. Prospects enroll automatically.</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="ENGAGE_API_KEY" placeholder="engage_api_key_..." autocomplete="off"/></div>
+          <div class="int-field"><label>Your Mailbox Email</label><input id="ENGAGE_MAILBOX_EMAIL" placeholder="you@company.com"/></div>
+        </div>
+      </div>
+      <div class="int-card" id="ic-sendgrid">
+        <div class="int-header">
+          <div class="int-logo"><div class="int-icon">✉️</div><div><div class="int-name">SendGrid</div><div class="int-cat">Email API · 100 free/day</div></div></div>
+          <div class="int-status demo" id="st-sendgrid">● Not connected</div>
+        </div>
+        <div class="int-desc">Reliable email delivery with open & click tracking. 100 emails/day free. Verify your domain for best deliverability. sendgrid.com</div>
+        <div class="int-fields">
+          <div class="int-field"><label>API Key</label><input id="SENDGRID_API_KEY" placeholder="SG...." autocomplete="off"/></div>
+          <div class="int-field"><label>From Email</label><input id="SENDGRID_FROM_EMAIL" placeholder="you@yourcompany.com"/></div>
+          <div class="int-field"><label>From Name</label><input id="SENDGRID_FROM_NAME" placeholder="Your Name"/></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- Security -->
+  <div class="settings-section">
+    <div class="settings-section-title">🔐 Security</div>
+    <div class="settings-section-sub">Admin secret protects the data reset endpoint</div>
+    <div style="max-width:400px">
+      <div class="fld"><label>Admin Secret</label><input id="ADMIN_SECRET" placeholder="your-secret-key" type="password" autocomplete="off"/></div>
+    </div>
+  </div>
+
+  <div class="flex gap10 flex-wrap">
+    <button class="btn btn-p" onclick="saveSettings()">💾 Save All Settings</button>
+    <div style="font-size:12px;color:var(--t3);align-self:center">Settings are saved for this session. Add to Render environment variables for permanent storage.</div>
+  </div>
+</div>
+
 </main>
 
 <footer class="ft">
-  <span>SDR Autopilot · <b style="color:var(--t1)">Adithya Sharma</b> · RAYR</span>
+  <span>SDR Autopilot · <b style="color:var(--t1)">Adithya Sharma</b> · RAYR Product Suite</span>
   <a href="https://github.com/Rayr-06/sdr-auto-rayr" target="_blank">GitHub ↗</a>
 </footer>
 </div>
 
-<!-- Modal -->
+<!-- Email modal -->
 <div class="mo" id="modal" onclick="outsideClose(event)">
   <div class="md">
     <div class="mh">
-      <div><div class="mt" id="mTitle">Email</div><div class="ts tm mt-1" id="mSub"></div></div>
+      <div><div class="mt2" id="mTitle">Email</div><div class="ts tm" style="margin-top:3px" id="mSub"></div></div>
       <button class="mc" onclick="closeModal()">✕</button>
     </div>
     <div id="mBody"></div>
@@ -437,60 +644,130 @@ tr:hover td{background:rgba(255,255,255,.015)}
 <div class="tc" id="toasts"></div>
 
 <script>
-// ── Config ─────────────────────────────────────────────────
-const BASE = '/api';
-let S = { stats:{icps:0,prospects:0,signals:0,drafts:0,sentEmails:0},
-  ps:{total:0,hot:0,warm:0,cold:0}, es:{sent:0,opened:0,replied:0,bounced:0,openRate:0,replyRate:0,bounceRate:0},
-  icps:[], prospects:[], signals:[], drafts:[], queue:[], sent:[], llm:null, cur:null };
+const API='/api';
+let S={
+  stats:{icps:0,prospects:0,signals:0,drafts:0,sentEmails:0},
+  ps:{total:0,hot:0,warm:0,cold:0},
+  es:{sent:0,opened:0,replied:0,bounced:0,openRate:0,replyRate:0,bounceRate:0},
+  icps:[],prospects:[],signals:[],drafts:[],queue:[],sent:[],
+  config:{aiProvider:'demo',dataSource:'demo',emailProvider:'demo',status:{}},
+  cur:null
+};
 
-// ── Helpers ────────────────────────────────────────────────
+// ─ Utils ──────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
-const h=s=>s?.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const h=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-function toast(msg, type='ok'){
+function toast(msg,type='ok'){
   const el=document.createElement('div');
   el.className=`tos ${type==='ok'?'tok':'ter'}`;
   el.innerHTML=`<span>${type==='ok'?'✓':'✗'}</span><span>${msg}</span>`;
   $('toasts').appendChild(el);
-  setTimeout(()=>el.remove(),4000);
+  setTimeout(()=>el.remove(),4500);
 }
 
 function setBtn(id,loading,label){
   const b=$(id);if(!b)return;
   b.disabled=loading;
   if(loading){b._t=b.innerHTML;b.innerHTML=`<span class="spin"></span> ${label}…`}
-  else{b.innerHTML=b._t||b.innerHTML}
+  else if(b._t){b.innerHTML=b._t}
 }
 
-function scoreBar(v){const p=Math.round(v);return`<div class="sb"><div class="st2"><div class="sf2" style="width:${p}%"></div></div><span class="sn2">${p}</span></div>`}
-function ini(n){return(n||'?').split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase()}
-function sbadge(s){const m={hot:'bh',warm:'bw',cold:'bc',pending:'bp',approved:'ba',sent:'bs',contacted:'bs'};return`<span class="badge ${m[s]||'bc'}">${s[0].toUpperCase()+s.slice(1)}</span>`}
-function sigbadge(t){const m={funding:'sf',hiring:'sh',news:'sn',tech_change:'st',expansion:'se',leadership:'sl',partnership:'sp'};return`<span class="bsig ${m[t]||'sn'}">${t.replace('_',' ')}</span>`}
-function sigicon(t){const m={funding:'💰',hiring:'📋',news:'📰',tech_change:'🔧',expansion:'🌍',leadership:'👔',partnership:'🤝'};return m[t]||'📡'}
+function scoreBar(v){
+  const p=Math.round(v);
+  return`<div class="sb"><div class="st2"><div class="sf2" style="width:${p}%"></div></div><span class="sn2">${p}</span></div>`;
+}
+
+function ini(n){return(n||'?').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase()||'??'}
+function sbadge(s){const m={hot:'bh',warm:'bw',cold:'bc',pending:'bp',approved:'ba',sent:'bs',contacted:'bs'};return`<span class="badge ${m[s]||'bc'}">${h(s[0].toUpperCase()+s.slice(1))}</span>`}
+function sigbadge(t){const m={funding:'sf',hiring:'sh',news:'sn',tech_change:'st',intent:'sp',expansion:'se',leadership:'sl',partnership:'sp'};return`<span class="bsig ${m[t]||'sn'}">${h(t.replace('_',' '))}</span>`}
+function sigicon(t){return{funding:'💰',hiring:'📋',news:'📰',tech_change:'🔧',expansion:'🌍',leadership:'👔',partnership:'🤝',intent:'📡'}[t]||'📡'}
 
 async function req(url,opts={}){
-  const r=await fetch(BASE+url,{headers:{'Content-Type':'application/json'},...opts});
+  const r=await fetch(API+url,{headers:{'Content-Type':'application/json'},...opts});
   if(!r.ok){const e=await r.json().catch(()=>({error:'Request failed'}));throw new Error(e.error||`HTTP ${r.status}`)}
   return r.json();
 }
 
-// ── Navigation ─────────────────────────────────────────────
+// ─ Navigation ─────────────────────────────────────────────
 function go(id,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   $(id)?.classList.add('on');
-  if(btn) btn.classList.add('on');
+  if(btn)btn.classList.add('on');
   else{const b=[...document.querySelectorAll('.nb')].find(x=>x.getAttribute('onclick')?.includes(`'${id}'`));if(b)b.classList.add('on')}
 }
 
-// ── Refresh ────────────────────────────────────────────────
+// ─ Mode banner ────────────────────────────────────────────
+function updateModeBanner(){
+  const c=S.config;
+  const hasData=c.dataSource!=='demo';
+  const hasEmail=c.emailProvider!=='demo';
+  const hasAI=c.aiProvider!=='demo';
+  const banner=$('modeBanner');
+  const label=$('modeLabel');
+  const demoAlert=$('demoAlert');
+
+  if(hasData && hasEmail && hasAI){
+    banner.className='mode-banner live';
+    label.textContent='🟢 Live Mode';
+    if(demoAlert)demoAlert.style.display='none';
+  } else if(hasData || hasEmail || hasAI){
+    banner.className='mode-banner live';
+    const parts=[];
+    if(hasAI) parts.push(c.aiProvider);
+    if(hasData) parts.push(c.dataSource);
+    if(hasEmail) parts.push(c.emailProvider);
+    label.textContent=`🟡 Partial: ${parts.join(', ')}`;
+    if(demoAlert)demoAlert.style.display='flex';
+  } else {
+    banner.className='mode-banner demo';
+    label.textContent='⚠ Demo Mode';
+    if(demoAlert)demoAlert.style.display='flex';
+  }
+}
+
+function updateIntegrationStatuses(){
+  const st=S.config.status||{};
+  const labels={
+    groq:['st-groq','ic-groq'],anthropic:['st-anthropic','ic-anthropic'],openai:['st-openai','ic-openai'],
+    apollo:['st-apollo','ic-apollo'],zoominfo:['st-zoominfo','ic-zoominfo'],
+    hunter:['st-hunter','ic-hunter'],lusha:['st-lusha','ic-lusha'],
+    engage:['st-engage','ic-engage'],sendgrid:['st-sendgrid','ic-sendgrid'],
+  };
+
+  for(const[key,[stId,cardId]] of Object.entries(labels)){
+    const connected=st[key];
+    const stEl=$(stId),cardEl=$(cardId);
+    if(stEl){stEl.className=`int-status ${connected?'live':'demo'}`;stEl.textContent=connected?'● Connected':'● Not connected';}
+    if(cardEl){cardEl.classList.toggle('connected',!!connected);}
+  }
+
+  // Section badges
+  const aiOk=st.groq||st.anthropic||st.openai;
+  const dataOk=st.apollo||st.zoominfo||st.hunter||st.lusha;
+  const emailOk=st.engage||st.sendgrid;
+
+  const mkBadge=(ok,label)=>ok?`<span class="badge ba">✓ ${label}</span>`:`<span class="badge bw">Demo</span>`;
+  if($('ai-status-badge'))$('ai-status-badge').innerHTML=mkBadge(aiOk,S.config.aiProvider||'AI');
+  if($('data-status-badge'))$('data-status-badge').innerHTML=mkBadge(dataOk,S.config.dataSource||'Data');
+  if($('email-status-badge'))$('email-status-badge').innerHTML=mkBadge(emailOk,S.config.emailProvider||'Email');
+}
+
+function sourceTag(source,label){
+  const isDemo=!source||source==='demo'||source.includes('demo');
+  if(isDemo) return`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--demo-bg);border:1px solid var(--demo-border);border-radius:99px;font-size:11px;font-weight:700;color:var(--demo-text)">⚠ ${label}: Demo Data — <span style="font-weight:400">Connect ${label.split(' ')[0]} in Settings for real data</span></div>`;
+  return`<div style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--live-bg);border:1px solid var(--live-border);border-radius:99px;font-size:11px;font-weight:700;color:var(--live-text)">✓ ${label}: ${h(source)} — Real Data</div>`;
+}
+
+// ─ Refresh ────────────────────────────────────────────────
 async function refreshAll(){
   try{
     const [he,ic,pr,st,si,qu,se,cf]=await Promise.allSettled([
       req('/health'),req('/stage1/icps'),req('/stage2/prospects?perPage=200'),
       req('/stage2/stats'),req('/stage3/signals?perPage=200'),
       req('/stage5/queue?perPage=200&includeAll=true'),req('/stage5/sent?perPage=200'),
-      fetch(BASE+'/config').then(r=>r.json()).catch(()=>null)
+      fetch(API+'/config').then(r=>r.json()).catch(()=>null)
     ]);
     if(he.status==='fulfilled')S.stats=he.value.counts;
     if(ic.status==='fulfilled')S.icps=ic.value.icps;
@@ -499,31 +776,32 @@ async function refreshAll(){
     if(si.status==='fulfilled')S.signals=si.value.signals;
     if(qu.status==='fulfilled'){S.queue=qu.value.drafts;S.drafts=qu.value.drafts}
     if(se.status==='fulfilled'){S.sent=se.value.emails;S.es=se.value.stats}
-    if(cf.status==='fulfilled'&&cf.value)S.llm=cf.value;
+    if(cf.status==='fulfilled'&&cf.value)S.config=cf.value;
     renderAll();
   }catch(e){console.error(e)}
 }
 
-function renderAll(){rStats();rProvider();rICPs();renderProspects();rSignals();rDrafts();rQueue();rSent()}
-
-function rProvider(){
-  if(!S.llm)return;
-  const m={groq:'Groq (Free)',anthropic:'Claude',openai:'OpenAI',demo:'Demo Mode'};
-  $('plabel').textContent=m[S.llm.provider]||S.llm.provider;
-  const d=document.querySelector('.pd');
-  if(d)d.style.background=S.llm.configured?'var(--g)':'var(--t3)';
+function renderAll(){
+  rStats();rICPs();renderProspects();rSignals();rDrafts();rQueue();rSent();
+  updateModeBanner();updateIntegrationStatuses();
 }
 
 function rStats(){
   const s=S.stats,ps=S.ps,es=S.es;
-  $('pf0').textContent=s.icps; $('pf1').textContent=s.prospects;
-  $('pf2').textContent=s.signals; $('pf3').textContent=s.drafts; $('pf4').textContent=s.sentEmails;
-  $('k0').textContent=s.icps; $('k1').textContent=s.prospects;
-  $('k1s').textContent=`${ps.hot} hot · ${ps.warm} warm`;
-  $('k2').textContent=s.signals; $('k3').textContent=s.drafts; $('k4').textContent=s.sentEmails;
-  $('k5').textContent=es.openRate+'%'; $('k5s').textContent=es.replyRate+'% reply';
-  if(s.icps>0){$('heroBox').style.display='none';$('quickBox').style.display='none'}
-  else{$('heroBox').style.display='';$('quickBox').style.display=''}
+  $('pf0').textContent=s.icps;$('pf1').textContent=s.prospects;
+  $('pf2').textContent=s.signals;$('pf3').textContent=s.drafts;$('pf4').textContent=s.sentEmails;
+  $('k0').textContent=s.icps;$('k1').textContent=s.prospects;
+  $('k1s').textContent=`${ps.hot||0} hot · ${ps.warm||0} warm`;
+  $('k2').textContent=s.signals;$('k3').textContent=s.drafts;$('k4').textContent=s.sentEmails;
+  $('k5').textContent=(es.openRate||0)+'%';$('k5s').textContent=(es.replyRate||0)+'% reply';
+  if(s.icps>0){$('heroBox').style.display='none'}else{$('heroBox').style.display=''}
+  const pending=S.queue.filter(d=>d.status==='pending').length;
+  const pc=$('pendingCount');
+  if(pc){pc.textContent=pending;pc.style.display=pending>0?'':'none'}
+  // Source tags
+  if($('dataSourceBadge'))$('dataSourceBadge').innerHTML=sourceTag(S.config.dataSource,'Prospect Data');
+  if($('prospectSourceTag'))$('prospectSourceTag').innerHTML=sourceTag(S.config.dataSource,'Prospect Data');
+  if($('emailProviderTag'))$('emailProviderTag').innerHTML=sourceTag(S.config.emailProvider,'Email Delivery');
 }
 
 function rICPs(){
@@ -534,19 +812,20 @@ function rICPs(){
     return`<div class="card card-sm mb10" style="border-color:rgba(124,92,252,.2)">
       <div class="flex aic jb mb6"><span class="fw6 ts">${h(icp.name)}</span><span class="badge ba">v${icp.version}</span></div>
       ${c.summary?`<div class="ts tx mb6">${h(String(c.summary))}</div>`:''}
-      ${c.painPoints?.length?`<div class="flex fw gap6">${c.painPoints.map(p=>`<span class="badge" style="background:rgba(248,113,113,.08);color:var(--r);border-color:rgba(248,113,113,.18)">${h(String(p))}</span>`).join('')}</div>`:''}
-    </div>`}).join('');
+      ${c.painPoints?.length?`<div class="flex fw gap6">${c.painPoints.slice(0,4).map(p=>`<span class="badge" style="background:rgba(248,113,113,.08);color:var(--r);border-color:rgba(248,113,113,.18)">${h(String(p))}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
 }
 
 function renderProspects(){
-  const f=$('pfilter').value, list=f==='all'?S.prospects:S.prospects.filter(p=>p.status===f);
+  const f=$('pfilter').value,list=f==='all'?S.prospects:S.prospects.filter(p=>p.status===f);
   const ps=S.ps;
-  $('p2sub').textContent=`${ps.total} total · ${ps.hot} hot · ${ps.warm} warm · ${ps.cold} cold`;
+  $('p2sub').textContent=`${ps.total||0} total · ${ps.hot||0} hot · ${ps.warm||0} warm · ${ps.cold||0} cold`;
   $('ptbl').innerHTML=!list.length?`<tr><td colspan="5"><div class="emp"><div class="ei">👥</div><h3>${S.prospects.length?'No matches':'No prospects yet'}</h3><p>${S.prospects.length?'Change filter':'Run Research first'}</p></div></td></tr>`:
     list.map(p=>`<tr>
       <td><div class="flex aic gap8"><div class="av">${ini(p.contact?.full_name)}</div><div><div class="fw6 ts">${h(p.contact?.full_name||'')}</div><div class="tss tx">${h(p.contact?.title||'')}</div></div></div></td>
       <td><div class="fw6 ts">${h(p.company?.name||'')}</div><div class="tss tx">${h(p.company?.industry||'')}</div></td>
-      <td>${scoreBar(p.icpScore)}</td><td>${scoreBar(p.intentScore)}</td>
+      <td>${scoreBar(p.icpScore||0)}</td><td>${scoreBar(p.intentScore||0)}</td>
       <td>${sbadge(p.status)}</td>
     </tr>`).join('');
 }
@@ -558,11 +837,11 @@ function rSignals(){
   $('sigBox').innerHTML=s.map(sg=>`<div class="sgi">
     <div class="sgic" style="background:rgba(251,191,36,.08)">${sigicon(sg.signalType)}</div>
     <div class="f1 mn0">
-      <div class="flex aic gap6 mb6 fw">${sigbadge(sg.signalType)}<span class="tss tx">via ${h(sg.source)}</span></div>
+      <div class="flex aic gap6 mb6 fw">${sigbadge(sg.signalType)}<span class="tss tx">via ${h(sg.source)}</span>${sg.source==='zoominfo'||sg.source==='zoominfo+ai'?'<span class="badge ba tss">✓ Real</span>':''}</div>
       <div class="fw6 ts">${h(sg.humanSummary)}</div>
       <div class="tss tx" style="margin-top:3px">${h(sg.prospect?.contact?.full_name||'')} · ${h(sg.prospect?.company?.name||'')}</div>
     </div>
-    <div style="text-align:right;flex-shrink:0"><div class="fw7 ts" style="color:var(--a)">${Math.round(sg.weight*100)}</div><div class="tss tx">${new Date(sg.detectedAt).toLocaleDateString()}</div></div>
+    <div style="text-align:right;flex-shrink:0"><div class="fw7 ts" style="color:var(--a)">${Math.round((sg.weight||0)*100)}</div><div class="tss tx">${new Date(sg.detectedAt).toLocaleDateString()}</div></div>
   </div>`).join('');
 }
 
@@ -575,16 +854,16 @@ function rDrafts(){
       <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">· ${h(d.prospect?.company?.name||'')}</span></div>
       <div class="fw6 ts trunc mb6">${h(d.editedSubject||d.subjectLines?.[0]||'No subject')}</div>
       <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,110))}…</div>
-      <div class="dm"><span>📝 ${d.wordCount}w</span><span>🚫 spam ${d.spamScore?.toFixed(1)}</span><span>📖 G${d.readabilityGrade?.toFixed(1)}</span></div>
+      <div class="dm"><span>📝 ${d.wordCount||0}w</span><span>🚫 spam ${(d.spamScore||0).toFixed(1)}</span><span>📖 G${(d.readabilityGrade||0).toFixed(1)}</span></div>
     </div>
     <div style="color:var(--t3);font-size:16px">›</div>
   </div>`).join('');
 }
 
 function rQueue(){
-  const pending=S.queue.filter(d=>d.status==='pending'), approved=S.queue.filter(d=>d.status==='approved');
-  $('s5sub').textContent=`${pending.length} pending · ${approved.length} approved`;
-  if(!S.queue.length){$('queueBox').innerHTML='<div class="emp"><div class="ei">📬</div><h3>No emails in queue</h3><p>Generate and approve emails first</p></div>';return}
+  const pending=S.queue.filter(d=>d.status==='pending'),approved=S.queue.filter(d=>d.status==='approved');
+  $('s5sub').textContent=`${pending.length} pending review · ${approved.length} approved ready`;
+  if(!S.queue.length){$('queueBox').innerHTML='<div class="emp"><div class="ei">📬</div><h3>No emails in queue</h3><p>Generate and approve emails in Stage 4</p></div>';return}
   $('queueBox').innerHTML=`<div class="flex aic jb mb10">
     <div class="fw7" style="font-family:'Syne',sans-serif">Approval Queue</div>
     <div class="flex gap6">${pending.length?`<span class="badge bp">${pending.length} pending</span>`:''} ${approved.length?`<span class="badge ba">${approved.length} approved</span>`:''}</div>
@@ -592,13 +871,13 @@ function rQueue(){
     <div class="av" style="background:linear-gradient(135deg,var(--r),#f43f5e)">${ini(d.prospect?.contact?.full_name)}</div>
     <div class="f1 mn0">
       <div class="flex aic gap6 mb6 fw">${sbadge(d.status)}<span class="fw6 ts">${h(d.prospect?.contact?.full_name||'')}</span><span class="tss tx">${h(d.prospect?.contact?.title||'')} · ${h(d.prospect?.company?.name||'')}</span></div>
-      <div class="tss tx mb6">ICP <b>${Math.round(d.prospect?.icpScore||0)}</b> · Intent <b>${Math.round(d.prospect?.intentScore||0)}</b> · Spam <b>${d.spamScore?.toFixed(1)}</b> · ${d.wordCount}w</div>
+      <div class="tss tx mb6">ICP <b>${Math.round(d.prospect?.icpScore||0)}</b> · Intent <b>${Math.round(d.prospect?.intentScore||0)}</b> · Spam <b>${(d.spamScore||0).toFixed(1)}</b> · ${d.wordCount||0}w</div>
       <div class="tss tx trunc">${h((d.editedBody||d.body||'').substring(0,140))}…</div>
     </div>
     ${d.status==='pending'?`<div class="abs">
-      <button class="ab ap" onclick="approve('${d.id}','approve',event)" title="Approve">✓</button>
-      <button class="ab ed" onclick="editDraftOpen('${d.id}',event)" title="Edit">✎</button>
-      <button class="ab sk" onclick="approve('${d.id}','skip',event)" title="Skip">⊘</button>
+      <button class="ab ap" onclick="approve('${d.id}','approve',event)" title="Approve ✓">✓</button>
+      <button class="ab ed" onclick="editDraftOpen('${d.id}',event)" title="Edit & Approve ✎">✎</button>
+      <button class="ab sk" onclick="approve('${d.id}','skip',event)" title="Skip ⊘">⊘</button>
     </div>`:''}
   </div>`).join('');
 }
@@ -607,7 +886,7 @@ function rSent(){
   const es=S.es;
   if(es.sent>0){
     $('emailStatBox').style.display='grid';
-    $('es0').textContent=es.openRate+'%';$('es1').textContent=es.replyRate+'%';$('es2').textContent=es.bounceRate+'%';
+    $('es0').textContent=(es.openRate||0)+'%';$('es1').textContent=(es.replyRate||0)+'%';$('es2').textContent=(es.bounceRate||0)+'%';
     $('sentBox').style.display='';
     $('sentTbl').innerHTML=S.sent.map(e=>`<tr>
       <td><div class="fw6 ts">${h(e.prospect?.contact?.full_name||'')}</div><div class="tss tx">${h(e.recipientEmail)}</div></td>
@@ -620,7 +899,7 @@ function rSent(){
   }else{$('emailStatBox').style.display='none';$('sentBox').style.display='none'}
 }
 
-// ── Actions ─────────────────────────────────────────────────
+// ─ Actions ────────────────────────────────────────────────
 async function runPipeline(){
   setBtn('heroBtn',true,'Running');
   try{
@@ -629,8 +908,8 @@ async function runPipeline(){
       targetTitles:['VP Sales','CRO','Head of Growth'],seniority:['VP','C-Suite','Director'],
       geographies:['US','UK'],techSignals:['Salesforce','HubSpot'],painKeywords:['outbound','pipeline','conversion']
     })});
-    toast(`✅ ${r.pipeline.stage2.prospectsEnriched} prospects · ${r.pipeline.stage3.signalsCollected} signals · ${r.pipeline.stage4.draftsGenerated} drafts`);
-    await refreshAll(); go('s5');
+    toast(`✅ ${r.pipeline.stage2.prospectsEnriched} prospects · ${r.pipeline.stage3.signalsCollected} signals · ${r.pipeline.stage4.draftsGenerated} drafts ready`);
+    await refreshAll();go('s5');
   }catch(e){toast(e.message,'er')}
   finally{setBtn('heroBtn',false)}
 }
@@ -644,7 +923,8 @@ async function runResearch(){
       companySizeMax:parseInt($('fmax').value)||2000,targetTitles:sp('ft'),
       seniority:['VP','C-Suite','Director'],geographies:sp('fg'),techSignals:sp('ftech'),painKeywords:sp('fp')
     })});
-    toast(`✅ ICP created — ${r.prospectCount} prospects`);
+    const src=r.dataSource==='demo'?'(AI demo data)':'✓ (real data from '+r.dataSource+')';
+    toast(`✅ ICP created — ${r.prospectCount} prospects ${src}`);
     await refreshAll();
   }catch(e){toast(e.message,'er')}
   finally{setBtn('resBtn',false)}
@@ -664,14 +944,15 @@ async function collectSignals(){
   setBtn('sigBtn',true,'Collecting');
   try{
     const r=await req('/stage3/collect',{method:'POST',body:JSON.stringify({})});
-    toast(`✅ ${r.totalSignals} signals`);await refreshAll();
+    const src=r.dataSource==='ai-demo'?'(AI generated)':'✓ ('+r.dataSource+')';
+    toast(`✅ ${r.totalSignals} signals detected ${src}`);await refreshAll();
   }catch(e){toast(e.message,'er')}
   finally{setBtn('sigBtn',false)}
 }
 
 async function generateEmails(){
   const need=S.prospects.filter(p=>(p.status==='hot'||p.status==='warm')&&p.draftCount===0);
-  if(!need.length){toast('All hot/warm prospects have drafts');return}
+  if(!need.length){toast('All hot/warm prospects already have drafts');return}
   setBtn('genBtn',true,'Generating');
   try{
     const r=await req('/stage4/generate-batch',{method:'POST',body:JSON.stringify({prospectIds:need.map(p=>p.id)})});
@@ -684,46 +965,78 @@ async function approve(id,action,e){
   e?.stopPropagation();
   try{
     await req(`/stage5/approve/${id}`,{method:'POST',body:JSON.stringify({action})});
-    toast(action==='approve'?'✅ Approved':'Skipped');await refreshAll();
+    toast(action==='approve'?'✅ Approved for sending':'Skipped');await refreshAll();
   }catch(e){toast(e.message,'er')}
 }
 
 async function sendAll(){
   const n=S.queue.filter(d=>d.status==='approved').length;
-  if(!n){toast('No approved emails','er');return}
+  if(!n){toast('No approved emails to send','er');return}
   setBtn('sndBtn',true,'Sending');
   try{
     const r=await req('/stage5/send-all',{method:'POST'});
-    toast(`✅ ${r.sent} emails sent`);await refreshAll();
+    const isDemoSend=r.provider==='demo';
+    toast(`✅ ${r.sent} emails ${isDemoSend?'simulated (add SendGrid or Engage to send real emails)':'sent via '+r.provider}`);
+    await refreshAll();
   }catch(e){toast(e.message,'er')}
   finally{setBtn('sndBtn',false)}
 }
 
-// ── Modal ──────────────────────────────────────────────────
+// ─ Settings ───────────────────────────────────────────────
+async function saveSettings(){
+  const keys=['GROQ_API_KEY','ANTHROPIC_API_KEY','OPENAI_API_KEY',
+    'APOLLO_API_KEY','ZOOMINFO_CLIENT_ID','ZOOMINFO_CLIENT_SECRET',
+    'ENGAGE_API_KEY','ENGAGE_MAILBOX_EMAIL','HUNTER_API_KEY','LUSHA_API_KEY',
+    'SENDGRID_API_KEY','SENDGRID_FROM_EMAIL','SENDGRID_FROM_NAME','ADMIN_SECRET'];
+  const data={};
+  for(const k of keys){
+    const el=$(k);
+    if(el&&el.value&&!el.value.includes('••••')) data[k]=el.value;
+  }
+  try{
+    const adminSecret=$('ADMIN_SECRET')?.value || '';
+    await req('/settings',{method:'POST',headers:{'x-admin-secret':adminSecret},body:JSON.stringify(data)});
+    toast('✅ Settings saved — integrations active');
+    await refreshAll();
+  }catch(e){toast('Failed to save: '+e.message,'er')}
+}
+
+async function loadSettingsValues(){
+  try{
+    const r=await fetch(API+'/settings').then(x=>x.json());
+    const s=r.settings||{};
+    for(const[k,v] of Object.entries(s)){
+      const el=$(k);
+      if(el&&v) el.placeholder=v; // Show masked values as placeholder
+    }
+  }catch{}
+}
+
+// ─ Modal ──────────────────────────────────────────────────
 function previewDraft(id){
   const d=S.drafts.find(x=>x.id===id)||S.queue.find(x=>x.id===id);
   if(!d)return; S.cur=d;
   $('mTitle').textContent='Email Preview';
   $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.contact?.title||''} · ${d.prospect?.company?.name||''}`;
   $('mBody').innerHTML=`
-    <div class="mb14">
+    <div style="margin-bottom:14px">
       <div class="tss tx mb8" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Subject Lines</div>
       ${(d.subjectLines||[]).map((s,i)=>`<div style="padding:9px 12px;border-radius:7px;margin-bottom:5px;font-size:13px;${i===0?'background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.2);font-weight:600':'background:var(--s2);color:var(--t3)'}"><span style="opacity:.4;margin-right:7px;font-family:monospace">#${i+1}</span>${h(s)}</div>`).join('')}
     </div>
-    <div class="sep"></div>
-    <div class="mb14">
-      <div class="flex aic jb mb8">
+    <div style="height:1px;background:var(--b1);margin:14px 0"></div>
+    <div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div class="tss tx" style="text-transform:uppercase;letter-spacing:.08em;font-weight:700">Email Body</div>
         <button class="btn btn-s btn-sm" onclick="copyEmail()">📋 Copy</button>
       </div>
       <div class="eb">${h(d.editedBody||d.body||'')}</div>
     </div>
     <div class="g3 mb14">
-      <div class="kpi" style="padding:11px"><div class="kl">Spam</div><div class="kv" style="font-size:18px;${(d.spamScore||0)<=3?'color:var(--g)':(d.spamScore||0)<=5?'color:var(--a)':'color:var(--r)'}">${(d.spamScore||0).toFixed(1)}</div></div>
+      <div class="kpi" style="padding:11px"><div class="kl">Spam Score</div><div class="kv" style="font-size:18px;${(d.spamScore||0)<=3?'color:var(--g)':(d.spamScore||0)<=5?'color:var(--a)':'color:var(--r)'}">${(d.spamScore||0).toFixed(1)}</div></div>
       <div class="kpi" style="padding:11px"><div class="kl">Readability</div><div class="kv" style="font-size:18px;color:var(--b)">G${(d.readabilityGrade||0).toFixed(1)}</div></div>
       <div class="kpi" style="padding:11px"><div class="kl">Words</div><div class="kv" style="font-size:18px;color:var(--v2)">${d.wordCount||0}</div></div>
     </div>
-    ${d.status==='pending'?`<div class="flex gap8"><button class="btn btn-p w100" onclick="approve('${d.id}','approve');closeModal()">✓ Approve</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`:''}`;
+    ${d.status==='pending'?`<div style="display:flex;gap:8px"><button class="btn btn-p w100" onclick="approve('${d.id}','approve');closeModal()">✓ Approve & Queue for Send</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`:''}`;
   $('modal').classList.add('on');
 }
 
@@ -733,10 +1046,15 @@ function editDraftOpen(id,e){
   $('mTitle').textContent='Edit & Approve';
   $('mSub').textContent=`${d.prospect?.contact?.full_name||''} · ${d.prospect?.company?.name||''}`;
   $('mBody').innerHTML=`
-    <div class="fld"><label>Subject</label><input id="es" value="${h(d.editedSubject||d.subjectLines?.[0]||'')}"/></div>
-    <div class="fld"><label>Body <span class="tx" id="wc">${d.wordCount}w</span></label>
-      <textarea id="eb" rows="11" oninput="$('wc').textContent=this.value.split(/\\s+/).filter(Boolean).length+'w'">${h(d.editedBody||d.body||'')}</textarea></div>
-    <div class="flex gap8"><button class="btn btn-p w100" onclick="saveEdit('${d.id}')">✓ Save & Approve</button><button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button></div>`;
+    <div class="fld"><label>Subject Line</label><input id="es" value="${h(d.editedSubject||d.subjectLines?.[0]||'')}"/></div>
+    <div class="fld">
+      <label>Email Body <span class="tx" id="wc" style="font-weight:400">${d.wordCount||0}w</span></label>
+      <textarea id="eb" rows="12" oninput="$('wc').textContent=this.value.split(/\\s+/).filter(Boolean).length+'w'" style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:9px;color:var(--t1);font-size:12px;font-family:'JetBrains Mono',monospace;line-height:1.65;outline:none;width:100%;resize:vertical">${h(d.editedBody||d.body||'')}</textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-p w100" onclick="saveEdit('${d.id}')">✓ Save & Approve</button>
+      <button class="btn btn-s btn-sm" onclick="closeModal()">Cancel</button>
+    </div>`;
   $('modal').classList.add('on');
 }
 
@@ -747,20 +1065,22 @@ async function saveEdit(id){
   }catch(e){toast(e.message,'er')}
 }
 
-function copyEmail(){navigator.clipboard.writeText(S.cur?.editedBody||S.cur?.body||'').then(()=>toast('📋 Copied!'))}
+function copyEmail(){navigator.clipboard.writeText(S.cur?.editedBody||S.cur?.body||'').then(()=>toast('📋 Copied to clipboard!'))}
 function closeModal(){$('modal').classList.remove('on')}
 function outsideClose(e){if(e.target===$('modal'))closeModal()}
 
 async function doReset(){
-  if(!confirm('Reset ALL data?'))return;
-  const sec=prompt('Admin secret:','');
+  if(!confirm('Reset ALL pipeline data? This cannot be undone.'))return;
+  const sec=prompt('Enter admin secret:','');
   try{
     await req('/admin/reset',{method:'DELETE',headers:{'x-admin-secret':sec||''}});
-    toast('Data reset');await refreshAll();
+    toast('✅ All data reset');await refreshAll();
   }catch(e){toast(e.message,'er')}
 }
 
+// ─ Init ───────────────────────────────────────────────────
 refreshAll();
+loadSettingsValues();
 </script>
 </body>
 </html>
