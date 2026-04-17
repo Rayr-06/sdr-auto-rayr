@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sdr-auto-rayr",
+  "compatibility_date": "2026-04-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".next/static",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
