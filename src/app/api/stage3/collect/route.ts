@@ -1,97 +1,99 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { analyzeSignals } from '@/lib/llm';
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { analyzeSignals } from '@/lib/llm'
+import { getZoomInfoIntentSignals, isZoomInfoConfigured } from '@/lib/zoominfo'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const body = await request.json();
-    const { prospectIds } = body as { prospectIds?: string[] };
-
-    // Get prospects to generate signals for
-    const where: Record<string, unknown> = {};
-    if (prospectIds && prospectIds.length > 0) {
-      where.id = { in: prospectIds };
-    }
-
     const prospects = await db.prospect.findMany({
-      where,
-      include: { icp: true },
-    });
+      where: { signals: { none: {} } },
+      take: 50,
+    })
 
-    if (prospects.length === 0) {
-      return NextResponse.json({ error: 'No prospects found' }, { status: 404 });
+    if (!prospects.length) {
+      return NextResponse.json({ message: 'No prospects need signals', totalSignals: 0, prospectsProcessed: 0 })
     }
 
-    const results: Array<{ prospectId: string; signalsCreated: number }> = [];
+    let totalSignals = 0
+    const ziConfigured = isZoomInfoConfigured()
 
+    // If ZoomInfo configured, pull real intent signals
+    if (ziConfigured) {
+      const icpIds = [...new Set(prospects.map(p => p.icpId))]
+      for (const icpId of icpIds) {
+        const icp = await db.iCP.findUnique({ where: { id: icpId } })
+        if (!icp) continue
+        const config = JSON.parse(icp.config) as Record<string, unknown>
+
+        const intentSignals = await getZoomInfoIntentSignals({
+          topics: (config.painKeywords as string[]) || ['outbound sales', 'CRM', 'pipeline'],
+          companySizeMin: (config.companySizeMin as number) || 50,
+          companySizeMax: (config.companySizeMax as number) || 2000,
+          industries: (config.industries as string[]) || ['SaaS'],
+        })
+
+        // Match intent signals to prospects by company
+        for (const sig of intentSignals) {
+          const matchingProspect = prospects.find(p => {
+            const company = JSON.parse(p.company) as Record<string, unknown>
+            return String(company.name || '').toLowerCase().includes(sig.companyName.toLowerCase())
+          })
+
+          if (matchingProspect) {
+            await db.signal.create({
+              data: {
+                prospectId: matchingProspect.id,
+                signalType: 'intent',
+                source: 'zoominfo',
+                weight: sig.score / 100,
+                humanSummary: `ZoomInfo Intent: ${sig.companyName} is actively researching "${sig.topic}" (score: ${sig.score})`,
+                rawData: JSON.stringify(sig),
+                detectedAt: new Date(),
+                expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              },
+            })
+            totalSignals++
+          }
+        }
+      }
+    }
+
+    // Always also run LLM signal analysis for all prospects
     for (const prospect of prospects) {
-      const contact = JSON.parse(prospect.contact) as { full_name: string; title: string };
-      const company = JSON.parse(prospect.company) as {
-        name: string;
-        domain: string;
-        size: string;
-        industry: string;
-        revenue: string;
-      };
+      const contact = JSON.parse(prospect.contact) as Record<string, string>
+      const company = JSON.parse(prospect.company) as Record<string, string>
+      const signals = await analyzeSignals(contact as { full_name: string; title: string }, company as { name: string; domain: string; size: string; industry: string; revenue: string })
 
-      // Use the enhanced analyzeSignals function which uses LLM
-      // to generate realistic, industry-specific signals
-      const signalsToCreate = await analyzeSignals(contact, company);
-
-      let signalsCreated = 0;
-
-      for (const signalData of signalsToCreate) {
-        const signalType = signalData.signalType || 'news';
-        const source = signalData.source || 'demo';
-        const weight = signalData.weight || (0.3 + Math.random() * 0.6);
-        const humanSummary = signalData.humanSummary || 'Intent signal detected';
-        const rawData = signalData.rawData ? JSON.stringify(signalData.rawData) : '{}';
-
+      for (const s of signals) {
         await db.signal.create({
           data: {
             prospectId: prospect.id,
-            signalType,
-            source,
-            weight: Math.round(weight * 100) / 100,
-            humanSummary,
-            rawData,
+            signalType: s.signalType,
+            source: ziConfigured ? `${s.source}+zoominfo` : s.source,
+            weight: s.weight,
+            humanSummary: s.humanSummary,
+            rawData: JSON.stringify(s.rawData || {}),
             detectedAt: new Date(),
-            expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 days from now
+            expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
           },
-        });
-
-        signalsCreated++;
+        })
+        totalSignals++
       }
 
-      // Update prospect intent score based on signals
-      const totalWeight = signalsToCreate.reduce(
-        (sum, s) => sum + (s.weight || 0.5),
-        0
-      );
-      const avgWeight = totalWeight / signalsToCreate.length;
-      const intentScore = Math.min(100, Math.round(avgWeight * 100));
-
+      const allSignals = await db.signal.findMany({ where: { prospectId: prospect.id } })
+      const avgWeight = allSignals.reduce((sum, s) => sum + s.weight, 0) / Math.max(allSignals.length, 1)
       await db.prospect.update({
         where: { id: prospect.id },
-        data: { intentScore },
-      });
-
-      results.push({
-        prospectId: prospect.id,
-        signalsCreated,
-      });
+        data: { intentScore: Math.min(100, Math.round(avgWeight * 100)) },
+      })
     }
 
     return NextResponse.json({
-      prospectsProcessed: results.length,
-      totalSignals: results.reduce((sum, r) => sum + r.signalsCreated, 0),
-      results,
-    });
+      totalSignals,
+      prospectsProcessed: prospects.length,
+      dataSource: ziConfigured ? 'zoominfo+ai' : 'ai-demo',
+    })
   } catch (error) {
-    console.error('Signal collection failed:', error);
-    return NextResponse.json(
-      { error: 'Signal collection failed', details: String(error) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Signal collection failed', details: String(error) }, { status: 500 })
   }
 }
