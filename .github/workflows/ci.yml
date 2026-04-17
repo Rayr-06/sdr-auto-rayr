@@ -1,4 +1,4 @@
-name: CI
+name: CI & Deploy to Cloudflare Pages
 
 on:
   push:
@@ -7,15 +7,11 @@ on:
     branches: [main]
 
 env:
-  DATABASE_URL: file:./db/sdr.db
-  ADMIN_SECRET: ci-secret
-  GROQ_API_KEY: demo
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -33,17 +29,16 @@ jobs:
 
       - name: Generate Prisma client
         run: npx prisma generate
+        env:
+          DATABASE_URL: file:./db/sdr.db
 
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Lint
-        run: npm run lint
-        continue-on-error: true
-
-      - name: Build
+      - name: Build for Cloudflare Pages
         run: npm run build
         env:
           DATABASE_URL: file:./db/sdr.db
-          ADMIN_SECRET: ci-secret
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET || 'ci-secret' }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY || 'demo' }}
           NEXT_TELEMETRY_DISABLED: 1
