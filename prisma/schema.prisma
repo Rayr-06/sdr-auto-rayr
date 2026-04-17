@@ -3,34 +3,35 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model ICP {
   id        String   @id @default(cuid())
   name      String
   version   Int      @default(1)
-  config    String   // JSON string with ICP configuration
+  config    String
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  prospects  Prospect[]
-  drafts     DraftEmail[]
+  prospects Prospect[]
+  drafts    DraftEmail[]
 }
 
 model Prospect {
-  id           String   @id @default(cuid())
-  icpId        String
-  contact      String   // JSON: { full_name, email, title, linkedin }
-  company      String   // JSON: { name, domain, size, industry, revenue }
-  icpScore     Float    @default(0)
-  intentScore  Float    @default(0)
-  status       String   @default("cold") // hot, warm, cold
-  enrichedAt   DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String    @id @default(cuid())
+  icpId       String
+  contact     String
+  company     String
+  icpScore    Float     @default(0)
+  intentScore Float     @default(0)
+  status      String    @default("cold")
+  enrichedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   icp     ICP          @relation(fields: [icpId], references: [id])
   signals Signal[]
@@ -39,62 +40,62 @@ model Prospect {
 }
 
 model Signal {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   prospectId   String
-  signalType   String   // funding, hiring, tech_change, news, etc
-  source       String   @default("demo")
-  weight       Float    @default(0)
-  humanSummary String   @default("")
-  rawData      String   @default("{}") // JSON
-  detectedAt   DateTime @default(now())
+  signalType   String
+  source       String    @default("demo")
+  weight       Float     @default(0)
+  humanSummary String    @default("")
+  rawData      String    @default("{}")
+  detectedAt   DateTime  @default(now())
   expiresAt    DateTime?
 
   prospect Prospect @relation(fields: [prospectId], references: [id])
 }
 
 model DraftEmail {
-  id                   String   @id @default(cuid())
-  prospectId           String
-  icpId                String?
-  subjectLines         String   @default("[]") // JSON array
-  body                 String   @default("")
-  editedSubject        String?
-  editedBody           String?
-  selectedSubject      Int?
-  personalisationTokens String  @default("[]") // JSON
-  generationMetadata   String   @default("{}") // JSON
-  spamScore            Float    @default(0)
-  readabilityGrade     Float    @default(0)
-  wordCount            Int      @default(0)
-  status               String   @default("pending") // pending, approved, skipped, sent
-  approvedBy           String?
-  approvedAt           DateTime?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  id                    String    @id @default(cuid())
+  prospectId            String
+  icpId                 String?
+  subjectLines          String    @default("[]")
+  body                  String    @default("")
+  editedSubject         String?
+  editedBody            String?
+  selectedSubject       Int?
+  personalisationTokens String    @default("[]")
+  generationMetadata    String    @default("{}")
+  spamScore             Float     @default(0)
+  readabilityGrade      Float     @default(0)
+  wordCount             Int       @default(0)
+  status                String    @default("pending")
+  approvedBy            String?
+  approvedAt            DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  prospect Prospect @relation(fields: [prospectId], references: [id])
-  icp     ICP?     @relation(fields: [icpId], references: [id])
-  sent    SentEmail?
+  prospect Prospect    @relation(fields: [prospectId], references: [id])
+  icp      ICP?        @relation(fields: [icpId], references: [id])
+  sent     SentEmail?
 }
 
 model SentEmail {
-  id              String   @id @default(cuid())
-  draftId         String?  @unique
-  prospectId      String
-  recipientEmail  String
-  subject         String
-  body            String
-  sendProvider    String   @default("demo")
-  trackingId      String   @unique
-  sentAt          DateTime @default(now())
-  openedAt        DateTime?
-  openCount       Int      @default(0)
-  repliedAt       DateTime?
-  replyText       String?
-  replySentiment  String?
-  bounced         Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  id             String    @id @default(cuid())
+  draftId        String?   @unique
+  prospectId     String
+  recipientEmail String
+  subject        String
+  body           String
+  sendProvider   String    @default("demo")
+  trackingId     String    @unique
+  sentAt         DateTime  @default(now())
+  openedAt       DateTime?
+  openCount      Int       @default(0)
+  repliedAt      DateTime?
+  replyText      String?
+  replySentiment String?
+  bounced        Boolean   @default(false)
+  createdAt      DateTime  @default(now())
 
-  prospect Prospect   @relation(fields: [prospectId], references: [id])
+  prospect Prospect    @relation(fields: [prospectId], references: [id])
   draft    DraftEmail? @relation(fields: [draftId], references: [id])
 }
