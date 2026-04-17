@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: sdr-autopilot
+    runtime: node
+    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
